@@ -76,7 +76,7 @@ end
 
         d               =       bwdist(~BW) ; 
         d               =       imcomplement(d) ; 
-%       d               =       imhmin(d , watershed_thresh) ; 
+%       d               =       imhmin(d , watershed_thresh) ; % Images had Very less amount of noise once they were sharpened twice in ImageJ
         particleSep     =       watershed(d) ; % NOTE that particleSep is a labelMatrix
         particleSep(~BW) = 0 ; 
         
