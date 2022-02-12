@@ -112,8 +112,69 @@ legend({'PC';'Chan';'Dipole'})
 xlabel('Time (s)')
 set(gca , 'LineWidth' , 2 , 'FontSize' , 20 , 'FontWeight' , 'bold' , 'GridAlpha' , 0.4)
 
-%%
+%% Using Real EEG Data: 
 
+% This data is also there in EEG Data_Structure:
+% # Of channels/EEG electrodes: 64
+% # of Trials: 99
+% # of Time Sampled Time Points: 640
+% # Sampling Frwquency: 256 hz
+
+%  close all; 
+
+clear, clc
+
+% load data
+
+load sampleEEGdata.mat
+EEG.data = double( EEG.data );
+
+% compute PCA on ERP
+% ERP -> Bole To -> Event Related Potential:
+
+% comptue the ERP Of Trial Averaged Data: ( To keep things simple here )
+erp = mean(EEG.data,3);
+
+% mean-centre and get covar
+data = erp - mean(erp,2);
+covd = data*data'/(EEG.pnts-1);
+% figure ; imagesc(covd) ; 
+
+% eig
+[evecs,evals] = eig( covd );
+
+% sort according to eigenvalues
+[evals,sidx] = sort(diag(evals),'descend');
+evecs = evecs(:,sidx);
+evals = 100*evals/sum(evals);
+
+% principal component time series
+pc_timeseries = evecs(:,1)'*erp;
+
+% plot results and compare with electrode
+
+figure(5), clf
+
+% eigenspectrum
+subplot(221)
+plot(evals(1:20),'ko-','markerfacecolor','w','linew',2)
+title('Eigenspectrum'), axis square
+ylabel('Percent variance'), xlabel('Component number')
+set(gca , 'LineWidth' , 2 , 'FontSize' , 20 , 'FontWeight' , 'bold' , 'GridAlpha' , 0.4)
+
+% topographical map of first eigenvector
+subplot(222)
+topoplotIndie(evecs(:,1),EEG.chanlocs,'numcontour',0,'shading','interp','electrodes','numbers');
+title('PC topomap')
+set(gca , 'LineWidth' , 2 , 'FontSize' , 20 , 'FontWeight' , 'bold' , 'GridAlpha' , 0.4)
+
+% plot time series
+subplot(212)
+plot(EEG.times,pc_timeseries, ...
+     EEG.times,mean(erp([19 32 20],:),1)*5 ,'linew',2 )
+legend({'PC';'Chans'})
+xlabel('Time (s)')
+set(gca , 'LineWidth' , 2 , 'FontSize' , 20 , 'FontWeight' , 'bold' , 'GridAlpha' , 0.4)
 
 
 
