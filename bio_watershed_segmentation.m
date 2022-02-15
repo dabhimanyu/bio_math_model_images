@@ -25,7 +25,7 @@ function [ img  ,  BW  , CC ]    =   bio_watershed_segmentation( img , min_islan
 % Prof. Manaswita Bose’s Lab,
 % Department of Energy Science and Engineering,
 % IIT-BOMBAY
-
+        
 %% Default Inputs: 
 if nargin == 1
         min_island_size     =   04  ; 
@@ -40,20 +40,23 @@ elseif nargin == 3
         watershed_thresh    =   01  ; 
 
 elseif nargin < 1 || nargin > 4     % Giving a cranky touch to our function :)
-    fprintf(' \n\n\t\t At-least 1 and At MAX, 4 Inputs were Allowed  \n\n\t\t Dumbass ||-_-|| \n\n\t\t Check your Inputs First, Before calling me. \n\n\n' ) ; 
+    fprintf([' \n\n\t\t At-least 1 and At MAX, 4 Inputs were Allowed  ' ...
+        '\n\n\t\t Dumbass ||-_-|| \n\n\t\t ' ...
+        'Check your Inputs First, Before Distrubing me . \n\n\n'] ) ; 
     return
 end
 
-I2 = 400 : 510 ; 
-I1 = 350 : 400 ; 
-%% Binarize the Image:
-% We'll first start by binarizing the images. We shall make use of Otsu's Algorithm for this.
-        % Binarize the image:
-        BW            =       imbinarize(img) ; 
+% NOTE: Use FIGURES() in the range of 50 to 100 :
+    I2 = 400 : 510 ; 
+    I1 = 350 : 400 ; 
+
+% Binarize the Image:
+% 
+%         BW            =       imbinarize(img) ; 
 %         figure(2) ; clf ; 
 %         imshow(BW(I1 , I2)) ; 
-
-%% Now Apply Watershed Segmentation:
+% 
+% Now Apply Watershed Segmentation:
 % Watershed segmentation shall allow us to seperated the two connected segmentations. Now before sending the image 
 % for watershed segmentation we need to ensure that there's minimise the amount of noise in the image. 
 % Watershed segmentation is very sensitive to the amount of noise in the image. So what we'll do is once we have 
@@ -62,61 +65,91 @@ I1 = 350 : 400 ;
 % This will do two important things for us:
 % 1. Reduce the overall noise in the figure. And, 
 % 2. Eliminate the redundant data from the images, which will make the algorithm more robust.
-
+% 
 % Preprocessing the binarized Mask:
-        SE              =       strel('square' , 2)     ; % Square Structuring element
-        BW              =       imopen(BW , SE )        ; % Morphologocal Opening Operation, will remove protrosions in the segmented islands
+%         SE              =       strel('square' , 2)     ; % Square Structuring element
+%         BW              =       imopen(BW , SE )        ; % Morphologocal Opening Operation, will remove protrosions in the segmented islands
 %         figure(3) ; clf ; 
 %         imshow(BW(I1 , I2)) ; 
-        
-        BW              =       imfill(BW ,  'holes')   ; % Filling or Morphological closing will fill any hole inside the island
-        BW              =       imclearborder(BW)       ; % Remove Border Pixels, or else it'll mess with the subsequent steps.
+%         
+%         BW              =       imfill(BW ,  'holes')   ; % Filling or Morphological closing will fill any hole inside the island
+%         BW              =       imclearborder(BW)       ; % Remove Border Pixels, or else it'll mess with the subsequent steps.
 
-%% Remove all particles which are bigger than the specified limits: 
+
 % i.e apply a size filter. 
-        
+        [img , BW]      =       cell_image_BW_preprocessor(img) ; 
+% %         figure(51) ; clf ; 
+% %         imshow(img , []) ; 
+% %         imshow(img(I1 , I2) , [])
+% %         title('\fontsize{20}Image After Removal Of Noise')
+% %         figure(52) ; clf ; 
+% %         imshow(BW , []) ; 
+% %         imshow(BW(I1 , I2) , []) ; 
+% %         title('\fontsize{20}BW Corresponding to Figure 51')
+
         CC              =       bwconncomp(BW , 4) ; 
         CC.islandSize   =       cellfun(@numel , CC.PixelIdxList)' ; 
 
 % % % % Visualizing island size distribution:
-% %         [y , x]         =       histcounts(CC.islandSize , 'Normalization','probability')          ; 
+% %         [y , x]         =       histcounts(CC.islandSize , 'Normalization','cdf')          ; 
 % %         x               =       ( x(1:end-1) + x(2:end) ) / 2      ;
-% %         figure(1) ; clf ; % histogram( CC.islandSize , 'Normalization','probability')          ; 
-% %         plot(x , y , '-or' , 'linew' , 2)
+% %         figure(99) ; clf ; % histogram( CC.islandSize , 'Normalization','probability')          ; 
+% %         plot(x , y , '-or' , 'linew' , 2 , 'markersize' , 9) ; 
+% %         title('Particle Size Distribution (CDF)') ; 
+% %         xlabel('Particle Size (Area in Pixels)') ; 
+% %         set(gca , 'LineWidth' , 2 , 'FontSize' , 20 , ...
+% %             'FontWeight' , 'bold' , 'GridAlpha' , 0.4 ) ; 
+
+%% Remove all particles which are bigger than the specified limits: 
 
 % Determine the erroneous Islands:
         faltu_islands   =       find( (CC.islandSize < min_island_size) | (CC.islandSize > max_island_size) ) ; 
 
-% Remove these islands from the Binarized Mask:         
+% Remove these islands from the Binarized Mask and update CC accordingly:         
         for i = 1 : length(faltu_islands)
-            BW( CC.PixelIdxList{ faltu_islands(i) } ) = false ; 
+            BW( CC.PixelIdxList{ faltu_islands(i) } )   =   false   ; 
         end
 
 % Modify The Original Image Accordingly: 
         img(~BW)        =       0 ;
-
         d               =       bwdist(~BW) ;   % Calculating the distance matrix from the 
-%         figure(4) ; clf ; 
-%         imshow(d(I1 , I2) , [] ) ; 
-        d               =       imcomplement(d) ; 
+% %         %%%% Visualize Distance Matrix:
+% %         figure(53) ; clf ; imshow(d(I1 , I2)) ; 
+% %         imshow(d(I1 , I2) , [] ) ; 
+% %         title('\fontsize{20} Distance Matrix (D)')
 
-%         figure(5) ; clf ; 
-%         imshow(d(I1 , I2) , [] ) ; 
-%         figure(6) ; clf ; surf(d)  ; 
-%         figure(6) ; clf ; surf(d(I1 , I2))  ; shading interp ; 
-%       d               =       imhmin(d , watershed_thresh) ; % Images had Very less amount of noise once they were sharpened twice in ImageJ
+% % %         d               =       imcomplement(d) ; 
+% % %         
+% % %         %%%% Visualize the complement of distance matrix:
+% % %         figure(54) ; clf ; 
+% % %         imshow(d(I1 , I2) , [] ) ;
+% % %         title('\fontsize{20} Complement Of Distance Matrix (D)')
+% % % 
+% % %         figure(55) ; clf ; surf(d)  ; 
+% % %         figure(56) ; clf ; surf(d(I1 , I2))  ; shading interp ; 
+% % %         colorbar(gca , "south"); 
+% % %         title('\fontsize{20} Ridges And Valleys In Distance Matrix (D)')
+% % % 
+% % % %       d               =       imhmin(d , watershed_thresh) ; % Images had Very less amount of noise once they were sharpened twice in ImageJ
         particleSep     =       watershed(d) ; % NOTE that particleSep is a labelMatrix
         particleSep(~BW) = 0 ; 
-%         figure(7) ; clf ; imshow(particleSep , [] )  ; 
-%         figure(7) ; clf ; imshow(particleSep(I1 , I2) , [] )  ; 
 
 %% Modify the Initial Segmentation Mask:
 
         BW              =       particleSep > 0 ;    % Binarizing Label Matrix
         img(~BW)        =       0  ;  
         img             =       reshape(img , size(img , 1) , [] )  ; 
-%% Calculating Size Of Islands:
 
+% %         % Visualise Images After Watershed Segmentation: 
+% %         figure(57) ; clf ; 
+% %         imshow(img , []) ; 
+% %         imshow(img(I1 , I2) , []) ; 
+% %         title('\fontsize{20}Segmented Image Using Watershed Transformation')
+% %         figure(58) ; clf ; 
+% %         imshow(BW , []) ; 
+% %         imshow(BW(I1 , I2) , []) ; 
+% %         title('\fontsize{20} BW After Watershed Segmentation')
+%% Calculating Size Of Islands:
         CC              =       bwconncomp(BW ,  4) ; 
         CC.islandSize   =       cellfun( @(x) numel(x) , CC.PixelIdxList )' ; 
 

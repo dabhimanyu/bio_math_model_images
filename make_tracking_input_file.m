@@ -6,7 +6,7 @@ function tracking_input = make_tracking_input_file(xy_data , max_displacement , 
 % NOTE: It Must be kept in mind that this function will call 
 % remove_nearby_islands() to accomplih this.
 % Just keep this in mind while making use of this function:
-%
+
 %% Check If any of the Input Cells is Empty:
 % Eliminate that cell: 
 temp_length     =   cellfun(@length , xy_data) ; 
@@ -75,7 +75,6 @@ elseif nargin < 1 || nargin > 3
 end
 
 %% Convert Cell-Array To A Matrix:
-
 % After This Step, This Data could be directly fed to the tracking Macro:
 tracking_input = cell2mat(tracking_input) ; 
 

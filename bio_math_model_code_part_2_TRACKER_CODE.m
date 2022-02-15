@@ -6,9 +6,12 @@ saving_toggle       =   false ;
 import_directory    =   '/Users/abhimanyudubey/Pictures/BIO MATH MODEL/export copy'     ; 
 export_directory    =   '/Users/abhimanyudubey/Pictures/BIO MATH MODEL/Matlab_Export'   ; 
 
-% Now we'll store the names of all the files in this folder in filenames:
+% Now we'll store the names of all the files in 
+% this folder in filenames:
 [~ , file_names] = Import_all_files_in_a_folder( ...
-                   '.tif' , import_directory) ;    i = 1 ; 
+                   '.tif' , import_directory) ;             i = 1 ; 
+
+% file_names = file_names(1:100) ; 
 
 % Preallocating Memory For Dynamic Cell Array:
 temp                            =       1500 ; 
@@ -20,11 +23,18 @@ centroid_data                   =       cell( numel(file_names) , 1)  ;
 centroid_data                   =       cellfun(@(x) zeros(temp , 2) , ...
                                         centroid_data , 'UniformOutput', 0 ) ; 
 
+% Check If a parallel pool is alrady running:
+if isempty(gcp("nocreate"))
+    % If Not then Start a Parallel Pool
+    parpool ; 
+end
+
 % Main Parallel For Loop Over all the Image Files starts here:
 tic
 parfor i = 1 : numel(file_names)
-    img                         =       imadjust(imread(fullfile(import_directory , file_names{i})))    ; 
-    [~ , ~ , CC]                =       bio_watershed_segmentation(img)     ; 
+    img                         =       imadjust(imread(fullfile( ...
+                                        import_directory , file_names{i})))    ; 
+    [~ , ~ , CC]                =       bio_watershed_segmentation(img)        ; 
     islandSize_data{i}          =       CC.islandSize           ; 
     centroid_data{i}            =       CC.centroid             ;
     avgIslandIntensity_data{i}  =       CC.avgIslandIntensity   ;  
@@ -43,24 +53,28 @@ else
         '\n\n\t\tIf you want to save your data in your HardDrive.\n\n\n\n'])
 end
 
-clearvars -except islandSize_data centroid_data avgIslandIntensity_data export_directory file_names import_directory
+clearvars -except islandSize_data centroid_data avgIslandIntensity_data export_directory file_names import_directory t
+%%
+clc ; 
 
 % Now (a) Remove NearBy Particles 
 %     (b) Make Tracking Input File, and 
 %     (c) Track Your particles:
+%     (d) Calculate Pixel Displacement:
 tic
-tracking_output = track( make_tracking_input_file(centroid_data , 2) , 1 ) ; 
+tracking_output = track( make_tracking_input_file(centroid_data , 1) , 0.1 ) ; 
+xyuvt_data = calculate_dx_and_dy_from_tracking_output(tracking_output) ; 
 t(2) = toc
 
 % Save The Tracking Data:
-save(fullfile(export_directory , 'Tracker_Output.mat') , "tracking_output") ; 
+% save(fullfile(export_directory , 'Tracker_Output.mat') , "tracking_output") ; 
+% save("Tracker_Output.mat" , 'tracking_output') ; 
 
+% Save xyuvt_data:
+% save("xyuvtIdx_data.mat" , 'xyuvt_data') ;
+% disp( sum( xyuvt_data(: , 3) == 0 & xyuvt_data(: , 4) == 0 )  / size(xyuvt_data , 1) * 100 ) ; 
+clear t ; 
 %% Done: Be Happy :)
-
-
-
-
-
 
 
 
