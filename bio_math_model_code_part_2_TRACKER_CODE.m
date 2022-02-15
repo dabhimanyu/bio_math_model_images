@@ -2,7 +2,7 @@ clc ;
 clear ; 
 
 % Locate The Image Files:
-saving_toggle       =   false ; 
+saving_toggle       =   true ; 
 import_directory    =   '/Users/abhimanyudubey/Pictures/BIO MATH MODEL/export copy'     ; 
 export_directory    =   '/Users/abhimanyudubey/Pictures/BIO MATH MODEL/Matlab_Export'   ; 
 
@@ -53,9 +53,8 @@ else
         '\n\n\t\tIf you want to save your data in your HardDrive.\n\n\n\n'])
 end
 
-clearvars -except islandSize_data centroid_data avgIslandIntensity_data export_directory file_names import_directory t
+clearvars -except islandSize_data centroid_data avgIslandIntensity_data export_directory file_names import_directory t saving_toggle ; 
 %%
-clc ; 
 
 % Now (a) Remove NearBy Particles 
 %     (b) Make Tracking Input File, and 
@@ -72,8 +71,21 @@ t(2) = toc
 
 % Save xyuvt_data:
 % save("xyuvtIdx_data.mat" , 'xyuvt_data') ;
-% disp( sum( xyuvt_data(: , 3) == 0 & xyuvt_data(: , 4) == 0 )  / size(xyuvt_data , 1) * 100 ) ; 
-clear t ; 
+
+% Save Variables If Saving Toggle is On or True:
+if saving_toggle 
+    % Saving Tracking Data:
+    save(fullfile(export_directory , 'Tracker_Output.mat') , "tracking_output") ; 
+    save("Tracker_Output.mat" , 'tracking_output') ; 
+    
+    % Saving XYUVT_DATA
+    save(fullfile(export_directory , 'xyuvt_data') , ...
+        "xyuvt_data") ; 
+    save("xyuvtIdx_data.mat" , 'xyuvt_data') ;
+end
+
+disp( sum( xyuvt_data(: , 3) == 0 & xyuvt_data(: , 4) == 0 )  / size(xyuvt_data , 1) * 100 ) ; 
+clear t saving_toggle; 
 %% Done: Be Happy :)
 
 
