@@ -53,9 +53,10 @@ imshow(img , []) ;
 title('\fontsize{20}Image Added With Noise') ; 
 
 %
-imwrite(img ,'myImg.tiff' , 'tiff' )
+% imwrite(img ,'myImg.tif' , 'tif' )
+imwrite(img ,'myImg.png' , 'png' )
 
-[img2 , BW2] = cell_image_BW_preprocessor(img , 1 , 0.6 , 3) ;  %% Sensitivity = 0.57   
+[img2 , BW2] = cell_image_BW_preprocessor_4validation(img , 1 , 0.6 , 3) ;  %% Sensitivity = 0.57   
 
 % % % % % cell_image_BW_preprocessor(img , 1 , 0.57 , 3)
 
@@ -70,6 +71,25 @@ title('\fontsize{20}BW Image Of Figure(5)') ;
 CC = bwconncomp(BW2) ; 
 CC.islandSize = cellfun( @length , CC.PixelIdxList )' ; 
 
+figure(7) ; clf ;  
+calib_for_beads = 0.16 ; % MICRONS PER PIXEL
+     CC = CC2 ;  % DELETE ME
+CC.islandSize = CC.islandSize * calib_for_beads * 1e3 ; 
+[y , x] = histcounts(CC.islandSize , 25) ; %  , Normalization="count") ; 
+x = ( x(1:end-1) + x(2:end) ) * 0.5 ;
+plot(x , y , 'or-' , 'linew' , 2.5 , 'markersize' , 14)
+leg = ['Mean = ' , num2str(mean(CC.islandSize)) ,' nm' , newline , ...
+    'Std. Deviation = ' , num2str(std(CC.islandSize)) , ' nm' , ...
+    newline , 'Std = ' , num2str(std(CC.islandSize)/mean(CC.islandSize)*100) , '% of Mean', ...
+    newline , 'No. Of Particles = ' , num2str(numel(CC.islandSize))] ; 
+legend(leg , 'location' , 'northeast')
+xlabel('Size Of Particles (Nanometers-(nm))')
+ylabel('Number Of Particles')
+title('Size Distribution Of All 500 Frames')
+axis xy ; axis square ; grid on ; 
+set(gca , 'linew' , 2.5 , 'fontsize' , 20 , 'fontweight' , 'bold')
+exportgraphics(gcf , 'size_dist_2.pdf' , 'Resolution' , 300 , 'ContentType' , 'vector')
+
 % Percent Std Deviation In the Measurement Of Particle Size:
 % STD is Just 0.7% Of the mean value despite that much noise in the Image:
 percent_std = std(CC.islandSize) / mean(CC.islandSize) * 100 
@@ -78,9 +98,9 @@ max_size    = max(CC.islandSize) ;
 
 clearvars -except img BW2 CC
 
-% Final One Line Processing:
+%% Final One Line Processing:
 
-[ img3 , BW3 , CC ] = bio_watershed_segmentation(img , 1800 , 2000  , 1) ; 
+[ img3 , BW3 , CC ] = bio_watershed_segmentation_4validation(img , 1800 , 2000  , 1) ; 
 figure(10) ; clf ; imshow(img3) ; 
 title('\fontsize{20} Final Step: Img After Watershed Segmentation')
 imwrite(img3 ,'myImg3.tiff' , 'tiff' )

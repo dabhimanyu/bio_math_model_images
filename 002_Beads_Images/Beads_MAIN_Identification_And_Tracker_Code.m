@@ -3,7 +3,7 @@ clear ;
 
 % Locate The Image Files:
 saving_toggle       =   true ; 
-import_directory    =   '/Users/abhimanyudubey/Pictures/BIO MATH MODEL/export copy'     ; 
+import_directory    =   '/Users/abhimanyudubey/Downloads/0009_0016_beads_images_256X256'     ; 
 export_directory    =   '/Users/abhimanyudubey/Pictures/BIO MATH MODEL/Matlab_Export'   ; 
 
 % Now we'll store the names of all the files in 
@@ -32,8 +32,17 @@ end
 % Main Parallel For Loop Over all the Image Files starts here:
 tic
 parfor i = 1 : numel(file_names)
-    img                         =       imadjust(imread(fullfile(import_directory , file_names{i})))    ; 
-    [~ , ~ , CC]                =       bio_watershed_segmentation(img)        ; 
+    img                         =       imsharpen(imadjust(imread(fullfile(import_directory , file_names{i}))) , ...
+                                        'radius' , 0.7 , 'amount' , 1.7)    ; 
+% % %     img                         =       wiener2(img , 3 * [1 , 1]) ; 
+    img                         =       imresize(img , 5) ; 
+    img                         =       padarray(img , [3,3] , 0) ; 
+%     close all ; imshow(img)
+
+    [img , BW]                  =       cell_image_BW_preprocessor_4_BEADS(img , 0 , 0 , 2) ;
+    [img , ~ , CC]              =       bio_watershed_segmentation_4_BEADS(img , BW , 2 , 1500 , 1)        ; 
+
+
     islandSize_data{i}          =       CC.islandSize           ; 
     centroid_data{i}            =       CC.centroid             ;
     avgIslandIntensity_data{i}  =       CC.avgIslandIntensity   ;  
@@ -60,7 +69,7 @@ clearvars -except islandSize_data centroid_data avgIslandIntensity_data export_d
 %     (c) Track Your particles:
 %     (d) Calculate Pixel Displacement:
 tic
-tracking_output = track( make_tracking_input_file(centroid_data , 1) , 0.1 ) ; 
+tracking_output = track( make_tracking_input_file_4BEADS(centroid_data , 1) , 0.1 ) ; 
 xyuvt_data = calculate_dx_and_dy_from_tracking_output(tracking_output) ; 
 t(2) = toc
 
@@ -83,6 +92,8 @@ if saving_toggle
     save("xyuvtIdx_data.mat" , 'xyuvt_data') ;
 end
 
+disp('Percent Of Zero Pixels Measurements = ')
+fprintf('\n') ; 
 disp( sum( xyuvt_data(: , 3) == 0 & xyuvt_data(: , 4) == 0 )  / size(xyuvt_data , 1) * 100 ) ; 
 clear t saving_toggle; 
 %% Done: Be Happy :)

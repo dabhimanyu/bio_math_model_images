@@ -11,7 +11,7 @@ export_directory    =   '/Users/abhimanyudubey/Pictures/BIO MATH MODEL/Matlab_Ex
 
 pj = 1 : 1 : 100 ; 
 
-for i = 1 : numel(file_names)
+for i = 1 : 100 %numel(file_names)
     img = imadjust( uint8(imread(fullfile(import_directory , file_names{i})) ) ); 
     xyt_data = tracking_output( tracking_output(: , 3) == i , [1 , 2 , 4] ) ; 
 

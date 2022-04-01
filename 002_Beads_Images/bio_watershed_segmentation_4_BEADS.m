@@ -1,4 +1,4 @@
-function [ img  ,  BW  , CC ]    =   bio_watershed_segmentation( img , min_island_size , ...
+function [ img  ,  BW  , CC ]    =   bio_watershed_segmentation_4_BEADS( img , BW , min_island_size , ...
     max_island_size , watershed_thresh )
 %
 % This Function carries out the initial segmentation Of the TIRF Microscopy
@@ -39,7 +39,7 @@ elseif nargin == 2
 elseif nargin == 3
         watershed_thresh    =   01  ; 
 
-elseif nargin < 1 || nargin > 4     % Giving a cranky touch to our function :)
+elseif nargin < 1 || nargin > 5     % Giving a cranky touch to our function :)
     fprintf([' \n\n\t\t At-least 1 and At MAX, 4 Inputs were Allowed  ' ...
         '\n\n\t\t Dumbass ||-_-|| \n\n\t\t ' ...
         'Check your Inputs First, Before Distrubing me . \n\n\n'] ) ; 
@@ -50,39 +50,13 @@ end
     I2 = 400 : 510 ; 
     I1 = 350 : 400 ; 
 
-% Binarize the Image:
-% 
-%         BW            =       imbinarize(img) ; 
-%         figure(2) ; clf ; 
-%         imshow(BW(I1 , I2)) ; 
-% 
-% Now Apply Watershed Segmentation:
-% Watershed segmentation shall allow us to seperated the two connected segmentations. Now before sending the image 
-% for watershed segmentation we need to ensure that there's minimise the amount of noise in the image. 
-% Watershed segmentation is very sensitive to the amount of noise in the image. So what we'll do is once we have 
-% identified the images, applied a size filter, we'll explicit assign all the reamining pixels zero values. 
 %
-% This will do two important things for us:
-% 1. Reduce the overall noise in the figure. And, 
-% 2. Eliminate the redundant data from the images, which will make the algorithm more robust.
-% 
-% Preprocessing the binarized Mask:
-%         SE              =       strel('square' , 2)     ; % Square Structuring element
-%         BW              =       imopen(BW , SE )        ; % Morphologocal Opening Operation, will remove protrosions in the segmented islands
-%         figure(3) ; clf ; 
-%         imshow(BW(I1 , I2)) ; 
-%         
-%         BW              =       imfill(BW ,  'holes')   ; % Filling or Morphological closing will fill any hole inside the island
-%         BW              =       imclearborder(BW)       ; % Remove Border Pixels, or else it'll mess with the subsequent steps.
-
-
-% i.e apply a size filter. 
 % %         [img , BW]      =       cell_image_BW_preprocessor(img) ; 
-
+% % 
 % %     Parameters For Artificial Image:    
 % % % % % cell_image_BW_preprocessor(img , 1 , 0.57 , 3)
-
-        [img , BW]      =       cell_image_BW_preprocessor(img , 1 , 0.6 , 3) ;
+% % 
+% % % % %         [img , BW]      =       cell_image_BW_preprocessor_4_BEADS(img) ;  %% , 1 , 0.6 , 3) ;
 % % 
 % %         % %         figure(51) ; clf ; 
 % %         imshow(img , []) ; 
@@ -93,8 +67,8 @@ end
 % %         imshow(BW(I1 , I2) , []) ; 
 % %         title('\fontsize{20}BW Corresponding to Figure 51')
 
-        CC              =       bwconncomp(BW , 4) ; 
-        CC.islandSize   =       cellfun(@numel , CC.PixelIdxList)' ; 
+    CC              =       bwconncomp(BW , 4) ; 
+    CC.islandSize   =       cellfun(@numel , CC.PixelIdxList)' ; 
 
 % % % % Visualizing island size distribution:
 % %         [y , x]         =       histcounts(CC.islandSize , 'Normalization','cdf')          ; 
@@ -110,19 +84,9 @@ end
 % %         set(gca , 'LineWidth' , 2.5 , 'FontSize' , 22 , ...
 % %             'FontWeight' , 'bold' , 'GridAlpha' , 0.4 ) ; 
 
-%% Remove all particles which are bigger than the specified limits: 
-
-% Determine the erroneous Islands:
-        faltu_islands   =       find( (CC.islandSize < min_island_size) | (CC.islandSize > max_island_size) ) ; 
-
-% Remove these islands from the Binarized Mask and update CC accordingly:         
-        for i = 1 : length(faltu_islands)
-            BW( CC.PixelIdxList{ faltu_islands(i) } )   =   false   ; 
-        end
-
 % Modify The Original Image Accordingly: 
-        img(~BW)        =       0 ;
-        d               =       bwdist(~BW) ;   % Calculating the distance matrix from the 
+    img(~BW)        =       0 ;
+    d               =       bwdist(~BW) ;   % Calculating the distance matrix from the 
 % %         %%%% Visualize Distance Matrix:
 % %         figure(53) ; clf ;
 % %         imshow(d , [] ) ; 
@@ -130,7 +94,7 @@ end
 % %         imshow(d(I1 , I2) , [] ) ; 
 % %         title('\fontsize{20} Distance Matrix (D)')
 
-        d               =       imcomplement(d) ; 
+    d               =       imcomplement(d) ; 
 
 % % %         %%%% Visualize the complement of distance matrix:
 % % %         figure(54) ; clf ; 
@@ -143,11 +107,22 @@ end
 % % %         colorbar(gca , "south"); 
 % % %         title('\fontsize{20} Ridges And Valleys In Distance Matrix (D)')
 
-if nargin == 4
-        d               =       imhmin(d , watershed_thresh) ; % Images had Very less amount of noise once they were sharpened twice in ImageJ
+if nargin == 5
+        d           =       imhmin(d , watershed_thresh) ; % Images had Very less amount of noise once they were sharpened twice in ImageJ
 end        
-        particleSep     =       watershed(d) ; % NOTE that particleSep is a labelMatrix
-        particleSep(~BW) = 0 ; 
+
+particleSep         =       watershed(d) ; % NOTE that particleSep is a labelMatrix
+particleSep(~BW)    =       0 ; 
+
+%% Remove all particles which are bigger than the specified limits: 
+
+% Determine the erroneous Islands:
+    faltu_islands   =       find( (CC.islandSize < min_island_size) | (CC.islandSize > max_island_size) ) ; 
+
+% Remove these islands from the Binarized Mask and update CC accordingly:         
+    for i = 1 : length(faltu_islands)
+        BW( CC.PixelIdxList{ faltu_islands(i) } )   =   false   ; 
+    end
 
 %% Modify the Initial Segmentation Mask:
 
@@ -165,9 +140,9 @@ end
 % %         imshow(BW(I1 , I2) , []) ; 
 % %         title('\fontsize{20} BW After Watershed Segmentation')
 %% Calculating Size Of Islands:
+
         CC              =       bwconncomp(BW ,  4) ; 
         CC.islandSize   =       cellfun( @(x) numel(x) , CC.PixelIdxList )' ; 
-
 %% Calculating the Coordinates Of the Centroid:
 
 % Convert Linear Indicies to X-Y Subscripts:

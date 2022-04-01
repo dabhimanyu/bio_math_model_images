@@ -1,4 +1,4 @@
-function [img , BW] = cell_image_BW_preprocessor(img , adaptive_thresh_toggle , BW_sensitivity  , opening_radius ) % , closing_radius)
+function [img , BW] = cell_image_BW_preprocessor_4validation(img , adaptive_thresh_toggle , BW_sensitivity  , opening_radius ) % , closing_radius)
 %
 %   %% DUDE you need to write this function's documentation and help here.
 %   I know it's a drag, but it'll help out other people who'll use your
