@@ -1,4 +1,4 @@
-function [img , BW] = cell_image_BW_preprocessor_4validation(img , adaptive_thresh_toggle , BW_sensitivity  , opening_radius ) % , closing_radius)
+function [img , BW] = cell_image_BW_preprocessor_4_BEADS(img , adaptive_thresh_toggle , BW_sensitivity  , opening_radius ) % , closing_radius)
 %
 %   %% DUDE you need to write this function's documentation and help here.
 %   I know it's a drag, but it'll help out other people who'll use your
@@ -68,13 +68,15 @@ end
 % Use Disk Opening if length(opening_radius) = 1
 % Use Rectangular Opening if length(opening_radius) = 2
 % Open mask with rectangle
+
+%% Uncomment IF STATMENT later on:
 if rect_opening_toggle
     dimensions = opening_radius;
     se = strel('rectangle', dimensions);
     BW = imopen(BW, se);
 elseif ~rect_opening_toggle
     decomposition = 0; % For Parallelization: 
-    se = strel('disk', opening_radius, decomposition);
+    se = strel('square', opening_radius ) ; % , decomposition);
     BW = imopen(BW, se);
 end
 

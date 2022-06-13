@@ -84,36 +84,36 @@ end
 % %         set(gca , 'LineWidth' , 2.5 , 'FontSize' , 22 , ...
 % %             'FontWeight' , 'bold' , 'GridAlpha' , 0.4 ) ; 
 
-% Modify The Original Image Accordingly: 
+% % % % % % Modify The Original Image Accordingly: 
     img(~BW)        =       0 ;
     d               =       bwdist(~BW) ;   % Calculating the distance matrix from the 
-% %         %%%% Visualize Distance Matrix:
-% %         figure(53) ; clf ;
-% %         imshow(d , [] ) ; 
-% %         imshow(d(I1 , I2)) ; 
-% %         imshow(d(I1 , I2) , [] ) ; 
-% %         title('\fontsize{20} Distance Matrix (D)')
+
+% % % % % % %         figure(53) ; clf ;
+% % % % % % %         imshow(d , [] ) ; 
+% % % % % % %         imshow(d(I1 , I2)) ; 
+% % % % % % %         imshow(d(I1 , I2) , [] ) ; 
+% % % % % % %         title('\fontsize{20} Distance Matrix (D)')
 
     d               =       imcomplement(d) ; 
 
-% % %         %%%% Visualize the complement of distance matrix:
-% % %         figure(54) ; clf ; 
-% % %         imshow(d() , [] ) ;
-% % %         imshow(d(I1 , I2) , [] ) ;
-% % %         title('\fontsize{20} Complement Of Distance Matrix (D)')
-% % % 
-% % %         figure(55) ; clf ; surf(d)  ; 
-% % %         figure(56) ; clf ; surf(d(I1 , I2))  ; shading interp ; 
-% % %         colorbar(gca , "south"); 
-% % %         title('\fontsize{20} Ridges And Valleys In Distance Matrix (D)')
-
-if nargin == 5
-        d           =       imhmin(d , watershed_thresh) ; % Images had Very less amount of noise once they were sharpened twice in ImageJ
-end        
-
+% % % % % % % %         %%%% Visualize the complement of distance matrix:
+% % % % % % % %         figure(54) ; clf ; 
+% % % % % % % %         imshow(d() , [] ) ;
+% % % % % % % %         imshow(d(I1 , I2) , [] ) ;
+% % % % % % % %         title('\fontsize{20} Complement Of Distance Matrix (D)')
+% % % % % % % % 
+% % % % % % % %         figure(55) ; clf ; surf(d)  ; 
+% % % % % % % %         figure(56) ; clf ; surf(d(I1 , I2))  ; shading interp ; 
+% % % % % % % %         colorbar(gca , "south"); 
+% % % % % % % %         title('\fontsize{20} Ridges And Valleys In Distance Matrix (D)')
+    d               =       imhmin(d , watershed_thresh) ; % Images had Very less amount of noise once they were sharpened twice in ImageJ
 particleSep         =       watershed(d) ; % NOTE that particleSep is a labelMatrix
-particleSep(~BW)    =       0 ; 
 
+particleSep(~BW)    =       0 ; 
+BW                  =       particleSep > 0 ;
+
+%% CHECK ME %%%%%%%%%%%%%%%%
+%  BW                  =       particleSep > 0 ;
 %% Remove all particles which are bigger than the specified limits: 
 
 % Determine the erroneous Islands:
@@ -126,7 +126,12 @@ particleSep(~BW)    =       0 ;
 
 %% Modify the Initial Segmentation Mask:
 
-        BW              =       particleSep > 0 ;    % Binarizing Label Matrix
+%% I WAS CHANGED:
+%         BW              =       particleSep > 0 ;    % Binarizing Label Matrix
+
+%%
+% %         BW              =       imopen(BW, strel('square', 3 ));
+
         img(~BW)        =       0  ;  
         img             =       reshape(img , size(img , 1) , [] )  ; 
 

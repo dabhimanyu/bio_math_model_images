@@ -5,10 +5,10 @@ clc ;
 
 % Construct A Noisy Image For Testing:
 
-center1 = -12;
+center1 = -2.9 ;
 center2 = -center1;
 dist = sqrt(2*(2*center1)^2);
-radius = dist/2.1 * 1.1;
+radius = dist/2.1 * 0.8;
 lims = [floor(center1-1.1*radius) ceil(center2+1.1*radius)];
 [x,y] = meshgrid(lims(1):lims(2));
 bw1 = sqrt((x-center1).^2 + (y-center1).^2) <= radius;
@@ -16,16 +16,16 @@ bw2 = sqrt((x-center2).^2 + (y-center2).^2) <= radius;
 bw  = bw1 | bw2 ;
 
 % % Close mask with disk
-% radius = 1;
-% decomposition = 0;
-% se = strel('disk', radius, decomposition);
-% bw = imclose(bw, se);
+radius = 1;
+decomposition = 0;
+se = strel('disk', radius, decomposition);
+bw = imclose(bw, se);
 figure(1) ; clf ; imshow(bw) ; 
-bw = rescale(repmat(bw , [10 , 9])) ; 
-
-figure(2) ; clf ; 
-imshow( bw , [] )
-title('\fontsize{20}Initial Noise Free Image')
+bw = rescale(repmat(bw , [17 , 17])) ; 
+% 
+% figure(2) ; clf ; 
+% imshow( bw , [] )
+% title('\fontsize{20}Initial Noise Free Image')
 
 % Adding Noise:
 
@@ -38,19 +38,34 @@ I2 = 70 : (70+size(bw , 2) - 1) ; % Default: 70 : (70+size(bw , 2) - 1)
 noise_img_black = rescale(noise_img_black(I1 , I2) ); 
 noise_img_gray  = rescale(noise_img_gray(I1 , I2) ); 
 
-figure(3) ; clf ; imshow(noise_img_black , []) ; 
-title('\fontsize{20}Noisy Image 1')
-figure(4) ; clf ; imshow(noise_img_gray  , []) ;
-title('\fontsize{20}Noisy Image 2')
+% % DELETE ME LATER:
+% bw(end+1 , :) = 0 ; 
+% bw(: , end+1) = 0 ;
+
+
+
+% figure(3) ; clf ; imshow(noise_img_black , []) ; 
+% title('\fontsize{20}Noisy Image 1')
+% figure(4) ; clf ; imshow(noise_img_gray  , []) ;
+% title('\fontsize{20}Noisy Image 2')
 
 % img = uint16( rescale( imadjust( rescale( bw + 2*noise_img_black + 2*noise_img_gray) ) , 0 , 255 ) ) ; 
-noise_level_1 = 2 ; 
-noise_level_2 = 2 ; 
+noise_level_1 = 0.0 ; 
+noise_level_2 = 0.715 ; 
 img = imadjust( rescale( bw + (noise_level_1 * noise_img_black) + (noise_level_2*noise_img_gray) ) ) ; 
 
+% img = imresize(img , 4 , 'bicubic') ; 
+im_size = size(img) ; 
+
+close all ; 
 figure(5) ; clf ; 
 imshow(img , []) ; 
 title('\fontsize{20}Image Added With Noise') ; 
+
+name = sprintf('Img_GN_%3.3f_.tif' , noise_level_2) ; 
+imwrite(img , name , 'tif') ; 
+ 
+%%
 
 %
 % imwrite(img ,'myImg.tif' , 'tif' )

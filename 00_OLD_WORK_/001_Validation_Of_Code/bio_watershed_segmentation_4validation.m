@@ -82,7 +82,7 @@ end
 % %     Parameters For Artificial Image:    
 % % % % % cell_image_BW_preprocessor(img , 1 , 0.57 , 3)
 
-        [img , BW]      =       cell_image_BW_preprocessor(img , 1 , 0.6 , 3) ;
+        [img , BW]      =       cell_image_BW_preprocessor_4validation(img , false , 0.6 , 3) ;
 % % 
 % %         % %         figure(51) ; clf ; 
 % %         imshow(img , []) ; 

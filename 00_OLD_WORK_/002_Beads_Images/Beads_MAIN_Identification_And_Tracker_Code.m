@@ -2,9 +2,11 @@ clc ;
 clear ; 
 
 % Locate The Image Files:
-saving_toggle       =   true ; 
-import_directory    =   '/Users/abhimanyudubey/Downloads/0009_0016_beads_images_256X256'     ; 
-export_directory    =   '/Users/abhimanyudubey/Pictures/BIO MATH MODEL/Matlab_Export'   ; 
+saving_toggle       =   false ; 
+import_directory    =   ['/Users/abhimanyudubey/Downloads/' ...
+    '0009_0016_beads_images_256X256/Sharpened_Twice_And_Increased_Brightness']    ; 
+export_directory    =   ['/Users/abhimanyudubey/Pictures' ...
+    '/BIO MATH MODEL/Matlab_Export']   ; 
 
 % Now we'll store the names of all the files in 
 % this folder in filenames:
@@ -23,32 +25,58 @@ centroid_data                   =       cell( numel(file_names) , 1)  ;
 centroid_data                   =       cellfun(@(x) zeros(temp , 2) , ...
                                         centroid_data , 'UniformOutput', 0 ) ; 
 
+timing_milisec                  =       zeros(length(file_names) , 1) ; 
+num_islands                     =       timing_milisec ; 
 % Check If a parallel pool is alrady running:
 if isempty(gcp("nocreate"))
     % If Not then Start a Parallel Pool
     parpool ; 
 end
-
+ %
+% count = [252 , 291 , 383 , 418 , 425 , 379 , 319 , 396 ]
 % Main Parallel For Loop Over all the Image Files starts here:
 tic
-parfor i = 1 : numel(file_names)
-    img                         =       imsharpen(imadjust(imread(fullfile(import_directory , file_names{i}))) , ...
-                                        'radius' , 0.7 , 'amount' , 1.7)    ; 
-% % %     img                         =       wiener2(img , 3 * [1 , 1]) ; 
-    img                         =       imresize(img , 5) ; 
+for i = 1 : numel(file_names)
+    %%
+%     img                         =       imsharpen(imadjust(imread(fullfile(import_directory , file_names{i}))) , ...
+%                                         'radius' , 0.7 , 'amount' , 1.7)    ; 
+tic
+    img                         =      imadjust(imread(fullfile(import_directory , file_names{i}))) ; 
+    img                         =       wiener2(img , 3 * [1 , 1]) ; 
+    img                         =       imresize(img , 3 , "bicubic") ; 
     img                         =       padarray(img , [3,3] , 0) ; 
-%     close all ; imshow(img)
+ 
+%     close all ; imshow(img , [] )
+% % %  [img , BW] = cell_image_BW_preprocessor_4_BEADS(img , 
+% % %      adaptive_thresh_toggle , BW_sensitivity  , opening_radius ) % , closing_radius)
+    [img , BW]                  =       cell_image_BW_preprocessor_4_BEADS(img , false , 0.00 , 3 ) ;
+    
+% %     [ img  ,  BW  , CC ]    =   bio_watershed_segmentation_4_BEADS( img , BW , min_island_size , ...
+% %     max_island_size , watershed_thresh )
+    [img , ~ , CC]              =       bio_watershed_segmentation_4_BEADS(img , BW , 10 , 900 , 2.0)        ; 
+    
 
-    [img , BW]                  =       cell_image_BW_preprocessor_4_BEADS(img , 0 , 0 , 2) ;
-    [img , ~ , CC]              =       bio_watershed_segmentation_4_BEADS(img , BW , 2 , 1500 , 1)        ; 
+% %     clc ; CC
+% %     close all ; fig = figure(1) ; 
+% %     imshow(img) ; hold on ; 
+% %     plot(CC.centroid(: , 1) , CC.centroid(: , 2) , '.r' , 'LineWidth', 2 , 'markersize' , 10) ; hold off ; 
+% %     title(sprintf('Showing %d Detected Cells',CC.NumObjects) , 'FontSize', 16)
+% % % %     exportgraphics(fig , fullfile(export_directory,file_names{i}) ) ; 
+% %     %%
 
+%     islandSize_data{i}          =       CC.islandSize           ; 
+%     centroid_data{i}            =       CC.centroid             ;
+%     avgIslandIntensity_data{i}  =       CC.avgIslandIntensity   ;  
 
-    islandSize_data{i}          =       CC.islandSize           ; 
-    centroid_data{i}            =       CC.centroid             ;
-    avgIslandIntensity_data{i}  =       CC.avgIslandIntensity   ;  
+num_islands(i)                   =       CC.NumObjects ; 
+timing_milisec(i)                =       1e3 * toc ;
+
 end
 t(1) = toc
 
+clearvars -except num_islands timing_milisec ; 
+
+%%
 % Save Variables If Saving Toggle is On or True:
 if saving_toggle 
     save(fullfile(export_directory , 'Relevant_Bio_Math_Tracking_Data') , ...
@@ -61,7 +89,8 @@ else
         '\n\n\t\tIf you want to save your data in your HardDrive.\n\n\n\n'])
 end
 
-clearvars -except islandSize_data centroid_data avgIslandIntensity_data export_directory file_names import_directory t saving_toggle ; 
+clearvars -except islandSize_data centroid_data avgIslandIntensity_data ...
+    export_directory file_names import_directory t saving_toggle ; 
 %%
 
 % Now (a) Remove NearBy Particles 
