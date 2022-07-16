@@ -39,6 +39,6 @@ T.Delta_X_Pixel         =   xyuvt_data(: , 3) ;
 T.Delta_Y_Pixel         =   xyuvt_data(: , 4) ;
 T.Frame_Number          =   xyuvt_data(: , 5) ; 
 T.Particle_ID           =   xyuvt_data(: , 6) ; 
-T.Distance              =   xyuvt_data(: , 7) ; 
+T.Distance_Pixel        =   xyuvt_data(: , 7) ; 
 
 end
