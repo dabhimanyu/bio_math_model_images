@@ -1,4 +1,4 @@
-%% Processing Real Cell Images:
+i%% Processing Real Cell Images:
 clear ; 
 % close all ; 
 clc ; 
@@ -80,7 +80,6 @@ exportgraphics(fig , 'Img_001_9053.jpg' , 'Resolution',300 , 'ContentType','imag
 % img = imsharpen(img , 'radius' , 1 , 'amount' , 0.8 , 'threshold' , 0.7 ) ; 
 BW_4_whole_img = imregionalmax(img , 4) ; 
 % img = medfilt2(img , medFiltSize*[1,1] ) ; 
-
 % figure(1) ; imshow(imresize(img , 2) , []) ; 
 % figure(2) ; imshowpair(img , BW)
 
