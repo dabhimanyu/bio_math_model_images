@@ -1,11 +1,19 @@
 function [xyuvt_data , T , p_dist] = calculate_dx_and_dy_from_tracking_output_002(tracking_output , ...
     num_of_frames_2_skip)
-% Function To Calculate Dx and Dy of the Pixel Movement In the images: 
-%
-% Write documentation of this function whenever you are in good mood
+%% Function To Calculate Dx and Dy of the Pixel Movement In the images: 
+% ----------------INPUT:-------------------
+% tracking_output = Output Of Tracking Macro
+% num_of_frames_2_skip = self-explanatory
+% ----------------OUTPUT:-------------------
+% xyuvt_data = A Seven Column Matrix whose Columns Are are explained below
+% T = Same as xyuvt_data, but in a pandas table format
+% p_dist = ( particle distance )  a Three-Column Matrix whose columns are
+% explained below
+
+% Preallocating Space For Variables:
 idx1         =   0     ;
 xyuvt_data   =   zeros( size(tracking_output , 1) - tracking_output(end , end) , 6 )  ;
-u_tracks     = length(unique(tracking_output(: , 4))) ; 
+u_tracks     =   length(unique(tracking_output(: , 4))) ; 
 
 % The 6 columns in the xyuvt_data matrix correspond to:
 % C1 -> X-Coordinate Of The Particle 
@@ -16,7 +24,12 @@ u_tracks     = length(unique(tracking_output(: , 4))) ;
 % C6 -> Particle Id For which dx-dy was calculated
 % C7 -> Distance Travelled = sqrt(dx^2 + dy^2)
 
-% Average Distance Covered By Each Unique Particle ID
+% 3-Columns Of p_dist:
+% C1: Mean Distance Covered In Each Unique Track
+% C2: Total Distance Covered By each unique Track
+% C3: Number Of Frames for which the island was tracked
+
+% Average Distance Covered By Each Unique Particle ID:
 p_dist = table ;
 p_dist.mean_dist        =   zeros(u_tracks , 1) ; 
 p_dist.total_dist       =   zeros(u_tracks , 1) ; 
@@ -43,6 +56,8 @@ particle_i  = 1    ;
     
         idx1 = idx1 + idx2 ; 
     end
+
+% Also Return XYUVT Data In a Pandas Table Data-Format: 
 T = table ; 
 T.X_Coordinate          =   xyuvt_data(: , 1) ; 
 T.Y_Coordinate          =   xyuvt_data(: , 2) ; 
