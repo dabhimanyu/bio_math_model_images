@@ -1,6 +1,37 @@
 function [ img  ,  BW  , CC ]    =   BW_artificial_img_via_reg_max_(img)
 %%
+%%
+%
 % Input Parameters:
+% img: image matrix
+% 
+% Output Parameters:
+%       1. img: Final 16-bit Gray-Image After Image Processing
+%       2. BW:  Binarized Image showing the location of centroids
+%               identified by the regional maxima algorithm
+%       3. CC:  a.k.a connected components, is a structure containg 5 elements. 
+%           (1) Connectivity: Connectivity Index used for 
+%                               identification of islands
+%           (2) ImageSize   : Size Of the Image
+%           (3) NumObjects  : Number of islands identified in the image
+%           (4) PixelIdxList: Linear Pixel Index List for the pixels of
+%                               each island
+%           (5) centroid    : X-Y Coordinates of all CC.NumObjects islands 
+% 
+% 
+% WRITTEN BY
+%
+% Abhimanyu Dubey
+% Joint Ph.D. student,
+% Prof. V. Kumaran’s Lab
+% Department of Chemical Engineering,
+% IISc Bangalore, 
+% Prof. Manaswita Bose’s Lab,
+% Department of Energy Science and Engineering,
+% IIT-BOMBAY
+% 
+
+%% Default Parameters:
 
 wFiltSize       =   5   ; 
 medFiltSize     =   5   ; 
