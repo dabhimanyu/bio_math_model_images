@@ -10,6 +10,19 @@ function [xyuvt_data , T , p_dist] = calculate_dx_and_dy_from_tracking_output_00
 % p_dist = ( particle distance )  a Three-Column Matrix whose columns are
 % explained below
 
+% WRITTEN BY
+%
+% Abhimanyu Dubey
+% Joint Ph.D. student,
+% Prof. V. Kumaran’s Lab
+% Department of Chemical Engineering,
+% IISc Bangalore, 
+% Prof. Manaswita Bose’s Lab,
+% Department of Energy Science and Engineering,
+% IIT-BOMBAY
+
+%%
+
 % Preallocating Space For Variables:
 idx1         =   0     ;
 xyuvt_data   =   zeros( size(tracking_output , 1) - tracking_output(end , end) , 6 )  ;
