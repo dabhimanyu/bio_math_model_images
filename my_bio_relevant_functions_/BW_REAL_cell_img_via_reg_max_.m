@@ -1,37 +1,86 @@
 function [ img  ,  BW  , CC ]    =   BW_REAL_cell_img_via_reg_max_(img)
-%% Input Parameters:
+%%
+%
+% Input Parameters:
+% img: image matrix
+% 
+% Output Parameters:
+%       1. img: Final 16-bit Gray-Image After Image Processing
+%       2. BW:  Binarized Image showing the location of centroids
+%               identified by the regional maxima algorithm
+%       3. CC:  a.k.a connected components, is a structure containg 5 elements. 
+%           (1) Connectivity: Connectivity Index used for 
+%                               identification of islands
+%           (2) ImageSize   : Size Of the Image
+%           (3) NumObjects  : Number of islands identified in the image
+%           (4) PixelIdxList: Linear Pixel Index List for the pixels of
+%                               each island
+%           (5) centroid    : X-Y Coordinates of all CC.NumObjects islands 
+% 
+% 
+% WRITTEN BY
+%
+% Abhimanyu Dubey
+% Joint Ph.D. student,
+% Prof. V. Kumaran’s Lab
+% Department of Chemical Engineering,
+% IISc Bangalore, 
+% Prof. Manaswita Bose’s Lab,
+% Department of Energy Science and Engineering,
+% IIT-BOMBAY
+% 
 
+%%
+%  Default Kernal Size For Wiener Filter And Median Filter:
+% NOTE To Self: Wiener is an edge preserving, adaptive low-pass filter
 wFiltSize       =   4 ; 
 medFiltSize     =   2 ; 
 
 im_original = img ; 
 % img = rescale(img) ; 
 
+% Apply 2-d wiener filter
 img2    =   wiener2(img , wFiltSize*[1,1]) ; 
+
+% Do The Thresholding Of the Image:
 BW_mask =   img2 >18500 ;  %  imshowpair(imadjust(im_original) , BW_mask)
+
+% Improve The Mask by using morphological opening and closing operations:
 BW_mask =   imclose(BW_mask , strel('disk' , 100) ) ; 
 BW_mask =   imopen( BW_mask , strel('disk' , 4  ) ) ; 
 
+% Whatever Pixels are not contained in Mask, assign zero Value to them:
+% This eliminates Unwanted Pixels and reduces the Image Size Significantly.
 img(~BW_mask)  = 0 ; 
 img2 = img ; 
 
 % Now Applying Filters On the Remaining Part Of the Image
+% First 2-D Wiener, then sharpening, and the finally median filter.
 img2 = wiener2(img2 , wFiltSize*[1,1] ) ; 
 img2 = imsharpen(img2 , 'radius' , ...
     1.05 , 'amount' , 1.6 , 'Threshold' , 0.7) ;
 img2 = medfilt2(img2 , medFiltSize*[1,1] ) ; 
 
+% Regional Maxima 
 BW = imregionalmax( rescale(img2) , 4) ; 
 %  im_fused = imfuse(img2 , BW) ; 
 %  figure ; imshow(im_fused , [] )
 
+% Segment The Image to Identify the islands contained in the image:
+% CC = connected components
 CC      =       bwconncomp(BW , 4)  ; 
+
+% Calculate the centroids Of All the Islands identified in the previous
+% Step:
 [x , y] =       cellfun( @(x) ind2sub(CC.ImageSize , x) , ...
                 CC.PixelIdxList' , 'UniformOutput',0 ) ; 
 CC.centroid  =  uint8( [ cellfun(@(x) mean(x) , y) , cellfun(@(x) mean(x) , x) ] )  ; 
 
 img = img2 ; 
 
+% Apply SubPixel Estimator: 
+% Implemented from one of the papers which you have shared with Aishwarya
+% Complete Reference To The Paper is written below:
 CC.centroid = subpixel_2d_gauss(CC.centroid , img2 ) ; 
 
 pj_break = 2 ; 
@@ -40,7 +89,7 @@ end
 
 function [ xy_vector , intensity_vec ] = ...
     subpixel_2d_gauss(centroid_xy , par_img)
-%%
+%% Paper Reference:
 % 2D Subpixel estimator based on, 
 % H. Nobach and M. Honkanen (2005)
 % Two-dimensional Gaussian regression for sub-pixel displacement
@@ -120,7 +169,8 @@ deltay = ((c11.*c10-2*c01.*c20)./(4*c20.*c02-c11.^2)) ;
 deltax(isnan(deltax)) = 0 ; 
 deltay(isnan(deltay)) = 0 ; 
 
-% Normalise The Deltas By their Norm:
+% Normalise The Deltas By their Norm 
+% so that their values lies b/t (0,1):
 deltax = deltax ./ (deltax'*deltax)^0.5 ; 
 deltay = deltay ./ (deltay'*deltay)^0.5 ; 
 
@@ -129,7 +179,8 @@ Subpixely = y + deltay;
 
 %% Calculate Intensities At These SubPixel Points:
 
-% FINISH ME....!!
+% FINISH ME....!! 
+% U Lazy fellow ||-_-||
 
 %%
 
@@ -139,79 +190,4 @@ pj_break = 'break_point' ;
 
 
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
