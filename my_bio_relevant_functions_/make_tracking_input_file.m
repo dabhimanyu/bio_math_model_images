@@ -4,8 +4,21 @@ function tracking_input = make_tracking_input_file(xy_data , max_displacement , 
 % Input to the function:
 %
 % NOTE: It Must be kept in mind that this function will call 
-% remove_nearby_islands() to accomplih this.
+% remove_nearby_islands() to accomplish this.
 % Just keep this in mind while making use of this function:
+% 
+% 
+% WRITTEN BY
+%
+% Abhimanyu Dubey
+% Joint Ph.D. student,
+% Prof. V. Kumaran’s Lab
+% Department of Chemical Engineering,
+% IISc Bangalore, 
+% Prof. Manaswita Bose’s Lab,
+% Department of Energy Science and Engineering,
+% IIT-BOMBAY
+% 
 
 %% Check If any of the Input Cells is Empty:
 % Eliminate that cell: 
