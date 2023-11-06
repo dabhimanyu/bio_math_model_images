@@ -17,18 +17,21 @@ clc ;
 
 
 % Import Centroid Data:
-filepath_centroid = ['/Users/abhimanyudubey/Pictures/' ...
-    'BIO MATH MODEL/001_Real_Img_via_' ...
-    'reg_max_/004_Matlab_Edited_Images_'] ; 
+filepath_centroid = ['/Users/' ...
+    'abhimanyudubey/' ...
+    'Pictures/BIO MATH MODEL/' ...
+    '002_NEW_Exp movies/' ...
+    '001_First_Trial_Export_'] ; 
 
-inspection_filepath = ['/Users/abhimanyudubey/' ...
-    'Pictures/BIO MATH MODEL/001_Real_Img_via_reg_max_/' ...
-    '005_Matlab_Tracker_Inspection_Export_'] ; 
+inspection_filepath = ['/Users/' ...
+    'abhimanyudubey/Pictures/' ...
+    'BIO MATH MODEL/' ...
+    '002_NEW_Exp movies/001_zInspection_'] ; 
 
 export_tracking_Data =  ['/Users/' ...
     'abhimanyudubey/Pictures/' ...
-    'BIO MATH MODEL/001_Real_Img_via_reg_max_' ...
-    '/004_Matlab_Edited_Images_'] ; 
+    'BIO MATH MODEL/002_NEW_Exp movies/' ...
+    '001_First_Trial_zTracking_Export_'] ; 
 
 % Import Centroid Data For Tracker:
 [fileNames , ~] = Import_all_files_in_a_folder( ...
@@ -41,13 +44,20 @@ load(fileNames{1}) ;
 % Skip Certain Number Of Frames:
 % Goal Is To Check If Tracker gives consistent results or not if
 % num_of_frames_2_skip are skipped. 1 means no image is being skipped
-num_of_frames_2_skip = 1 ; 
-centroid_data = centroid_data(1:num_of_frames_2_skip:end) ; 
-onlyFilenames = onlyFilenames(1:num_of_frames_2_skip:end) ; 
+num_of_frames_2_skip    =       1 ; 
+centroid_data           =       centroid_data(1:num_of_frames_2_skip:end) ; 
+onlyFilenames           =       onlyFilenames(1:num_of_frames_2_skip:end) ; 
+mean_intensity_data     =       mean_intensity_data(1:num_of_frames_2_skip:end) ; 
+
+% idx                 =   1 : 100                     ; 
+% centroid_data       =   centroid_data(idx)          ; 
+% mean_intensity_data =   mean_intensity_data(idx)    ; 
+% onlyFilenames       =   onlyFilenames(idx)          ; 
+
 
 tic
 % Linking Distance For The Tracker
-max_disp                     =      4.9   ; 
+max_disp                     =      1   ; 
 
 % Create An Input File for the tracker, and send it through the tracker
 tracking_output              =      track( make_tracking_input_file( ...
@@ -91,27 +101,27 @@ save(fullfile(export_tracking_Data , sprintf(...
 
 %% Inspecting Tracking Output:
 
-raw_img_filepath = ['/Users/abhimanyudubey/Pictures/B' ...
-    'IO MATH MODEL/001_Real_Img_via_reg_max_/' ...
-    '002_Raw_Images_From_Video_'] ; 
-
-[fileNames , onlyFilenames] = Import_all_files_in_a_folder( ...
-    '.tif' , raw_img_filepath) ; 
-
-unique_idx = unique(tracking_output(: , 3)) ; 
-
-for i = 1 : length(unique_idx)
-    img     =   imread(fileNames{unique_idx(i)}) ; 
-    idx     =   find(tracking_output(: , 3) == unique_idx(i))  ;
-    c       =   tracking_output(idx , 1:2) ; 
-    cell_id =   tracking_output(idx , 4) ; 
-    numId = 1 : 2 : 40 ; 
-    insp_img = insertText(img , c(numId , :) , cell_id(numId) , ...
-        'AnchorPoint' , 'Center' , 'fontsize' , 7 ) ; 
-    imwrite(insp_img , fullfile(inspection_filepath , ...
-        onlyFilenames{unique_idx(i)})) ;
-end
-
+% % raw_img_filepath = ['/Users/abhimanyudubey/Pictures/B' ...
+% %     'IO MATH MODEL/001_Real_Img_via_reg_max_/' ...
+% %     '002_Raw_Images_From_Video_'] ; 
+% % 
+% % [fileNames , onlyFilenames] = Import_all_files_in_a_folder( ...
+% %     '.tif' , raw_img_filepath) ; 
+% % 
+% % unique_idx = unique(tracking_output(: , 3)) ; 
+% % 
+% % for i = 1 : length(unique_idx)
+% %     img     =   imread(fileNames{unique_idx(i)}) ; 
+% %     idx     =   find(tracking_output(: , 3) == unique_idx(i))  ;
+% %     c       =   tracking_output(idx , 1:2) ; 
+% %     cell_id =   tracking_output(idx , 4) ; 
+% %     numId = 1 : 2 : 40 ; 
+% %     insp_img = insertText(img , c(numId , :) , cell_id(numId) , ...
+% %         'AnchorPoint' , 'Center' , 'fontsize' , 7 ) ; 
+% %     imwrite(insp_img , fullfile(inspection_filepath , ...
+% %         onlyFilenames{unique_idx(i)})) ;
+% % end
+% % 
 
 %%
 

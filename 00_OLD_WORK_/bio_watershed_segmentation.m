@@ -165,6 +165,7 @@ end
 % %         imshow(BW(I1 , I2) , []) ; 
 % %         title('\fontsize{20} BW After Watershed Segmentation')
 %% Calculating Size Of Islands:
+
         CC              =       bwconncomp(BW ,  4) ; 
         CC.islandSize   =       cellfun( @(x) numel(x) , CC.PixelIdxList )' ; 
 

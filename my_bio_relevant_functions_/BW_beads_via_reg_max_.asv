@@ -38,26 +38,12 @@ img = imadjust(img)     ;       % figure(4) ; imshow(img , [] ) ;
 
 % img     =       imhmin(img , 10 , 4) ; 
 
-img(img<6000) = 0 ; 
-img     =       wiener2(img , (wFiltSize-1)*[1,1]) ; 
-img     =       imgaussfilt(img , 0.7 ,'Padding' , 'symmetric' ) ;  % , "FilterSize", 3 ) ; %  
+img(img<5000) = 0 ; 
+% img     =       wiener2(img , wFiltSize*[1,1]) ; 
+img     =       imgaussfilt(img , 0.5 ,'Padding' , 'symmetric' ) ;  % , "FilterSize", 3 ) ; %  
 img     =       medfilt2(img , (-1+medFiltSize)*[1,1] ) ;
 
-% % % % % % Formulate Distance Matrix:
-% watershed_thresh = 1 ; 
-% BW2 = imbinarize(img)
-% d               =       imcomplement(bwdist(~BW)) ; 
 % 
-% % % % % H-Min Transform To Eliminate smaller peaks:
-% d               =       imhmin(d , watershed_thresh) ; 
-% 
-% particleSep     =       watershed(d) ; % NOTE that particleSep is a labelMatrix
-% particleSep(~BW_ws) = 0 ; 
-% 
-% BW_ws              =       particleSep > 0 ;    % Binarizing Label Matrix
-% img(~BW_ws)        =       0  ;  
-% img             =       reshape(img , size(img , 1) , [] )  ; 
-
 
 % img     =       imhmax(img , 2 , 8)     ; 
 BW      =       imregionalmax(img , 8)  ;      % figure(11) ; imshowpair(img , BW) ; 

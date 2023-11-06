@@ -52,7 +52,7 @@ end
     I1 = 350 : 400 ; 
 
 % Adjust data to span data range.
-img = imadjust(img);
+img = imadjust(img); % imshow(imresize(img,4) , [])
 
 if ~logical(adaptive_thresh_toggle)
     % Use Global Binarization If Adaptive Thresh is False:

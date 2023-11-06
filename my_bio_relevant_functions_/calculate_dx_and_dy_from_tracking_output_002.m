@@ -26,7 +26,7 @@ function [xyuvt_data , T , p_dist] = calculate_dx_and_dy_from_tracking_output_00
 % Preallocating Space For Variables:
 idx1         =   0     ;
 xyuvt_data   =   zeros( size(tracking_output , 1) - tracking_output(end , end) , 6 )  ;
-u_tracks     =   length(unique(tracking_output(: , 4))) ; 
+u_tracks     =   length(unique(tracking_output(: , 5))) ; 
 
 % The 6 columns in the xyuvt_data matrix correspond to:
 % C1 -> X-Coordinate Of The Particle 
@@ -36,6 +36,7 @@ u_tracks     =   length(unique(tracking_output(: , 4))) ;
 % C5 -> Frame Number To Which The Particle Belongs
 % C6 -> Particle Id For which dx-dy was calculated
 % C7 -> Distance Travelled = sqrt(dx^2 + dy^2)
+% C8 -> Mean Intensities Of the Particles
 
 % 3-Columns Of p_dist:
 % C1: Mean Distance Covered In Each Unique Track
@@ -51,16 +52,17 @@ p_dist.track_length     =   zeros(u_tracks , 1) ;
 particle_i  = 1    ; 
 
     for particle_i  = 1 : u_tracks % %% tracking_output(end , end)
-        temp_xy     =   tracking_output( tracking_output(: , 4) == particle_i , : )  ;  
+        temp_xy     =   tracking_output( tracking_output(: , 5) == particle_i , : )  ;  
         temp_uv     =   diff(temp_xy(: , 1:2)) / num_of_frames_2_skip ;
         idx2        =   size(temp_uv , 1) ; 
     
         % Construct XYUV Data Matrix:
         xyuvt_data(idx1+1 : idx1 + idx2 , 1:2 )     =       temp_xy(1:end-1 , 1:2)      ; 
         xyuvt_data(idx1+1 : idx1 + idx2 , 3:4 )     =       temp_uv                     ;
-        xyuvt_data(idx1+1 : idx1 + idx2 , 5   )     =       temp_xy(1:end-1 , 3  )      ; 
-        xyuvt_data(idx1+1 : idx1 + idx2 , 6   )     =       temp_xy(1:end-1 , 4  )      ; 
+        xyuvt_data(idx1+1 : idx1 + idx2 , 5   )     =       temp_xy(1:end-1 , 4  )      ; 
+        xyuvt_data(idx1+1 : idx1 + idx2 , 6   )     =       temp_xy(1:end-1 , 5  )      ; 
         xyuvt_data(idx1+1 : idx1 + idx2 , 7   )     =       sqrt(sum(temp_uv.^2, 2))    ;
+        xyuvt_data(idx1+1 : idx1 + idx2 , 8   )     =       temp_xy(1:end-1 , 3  )      ;
 
         % Average Distance Covered By Each Unique Particle ID :
         p_dist.total_dist(particle_i)               =       sum(  sqrt(sum(temp_uv.^2, 2)) ) ; 
@@ -79,5 +81,6 @@ T.Delta_Y_Pixel         =   xyuvt_data(: , 4) ;
 T.Frame_Number          =   xyuvt_data(: , 5) ; 
 T.Particle_ID           =   xyuvt_data(: , 6) ; 
 T.Distance_Pixel        =   xyuvt_data(: , 7) ; 
+T.mean_Intensity        =   xyuvt_data(: , 8) ; 
 
 end

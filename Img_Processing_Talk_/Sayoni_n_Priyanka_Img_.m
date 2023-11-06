@@ -1,0 +1,127 @@
+%% Priyanka Images:
+
+close all ; 
+clear ; 
+clc ; 
+
+p_filePath = ['/Users/' ...
+    'abhimanyudubey/Pictures/' ...
+    'z_Image_Processing_Talk_/' ...
+    'Priyanka'] ; 
+
+[~ , onlyFilenames] = Import_all_files_in_a_folder('tif' , p_filePath) ; 
+
+i = 1 ; 
+
+%%
+close all ; 
+
+im_original = imread(fullfile(p_filePath , onlyFilenames{i})) ; 
+figure(1) ; imshow(im_original , []) ; 
+title('Original Image' , 'FontSize', 14 ) ; 
+
+img = imadjust(im_original) ; 
+figure(1) ; imshow(img) ; 
+
+img = imadjust( medfilt2(img , 5*[1,1] ) ) ; 
+
+% Braddy's Adaptive Thresholding, or Otsu's Thresh on each subImage:
+BW = imbinarize(img , 'adaptive' , 'Sensitivity',0 , ...
+        'ForegroundPolarity','bright') ; 
+
+BW = imclose(BW , strel('disk'  , 2  )) ; 
+BW = imerode(BW , strel('disk'  , 3  )) ; 
+BW = imopen( BW , strel('disk'  , 5  )) ; 
+BW = imdilate(BW , strel('disk' , 3  )) ; 
+
+im_overlay = imoverlay(img , BW , 'green') ; 
+
+figure(2) ; clf ; 
+imshowpair(im_original , im_overlay , 'montage') ; 
+
+% Remove Everything else except for features of interst from Image:
+img2 = img ; 
+img2(~BW) = 0 ; 
+figure(3) ; clf ; 
+imshowpair(img , img2 , 'montage') ; 
+
+%% Watershed Segmentation:
+watershed_thresh        =      10 ; 
+
+% Calculate H-Min Transform and then evaluate eucledian distance transform:
+d                       =       imhmin( imcomplement( ...
+                                bwdist(~BW) ) , watershed_thresh ) ; 
+
+xIdx = 435 : 1082 ; 
+yIdx = 662 : 1685 ; 
+figure(4) ; clf ; surf(d(xIdx , yIdx) , EdgeColor="none") ; 
+colormap jet ; lighting gouraud ; shading interp ; 
+
+particleSep             =       watershed(d)        ; 
+particleSep(~BW)        =       0                   ; 
+BW2                      =       particleSep > 0     ; 
+
+% particle_rgb            =       label2rgb(labelmatrix(BW))
+
+%% Calculation Of Centroids:
+
+min_island_size = 500 ; 
+max_island_size = 3000 ; 
+
+% Connected Components:
+CC                      =       bwconncomp(BW , 4) ; 
+CC.islandSize           =       cellfun(@numel , CC.PixelIdxList)' ; 
+faltu_islands           =       find( ...
+    (CC.islandSize < min_island_size) | ...
+    (CC.islandSize > max_island_size) ) ; 
+
+% Remove Faltu islands From Mask:   
+        for i = 1 : length(faltu_islands)
+            BW( CC.PixelIdxList{ faltu_islands(i) } )   ...
+            =   false   ; 
+        end
+
+% Remove Faltu Islands From CC:
+CC.NumObjects                   =       CC.NumObjects - ...
+length(faltu_islands) ; 
+CC.PixelIdxList(faltu_islands)  =       [] ; 
+CC.islandSize(faltu_islands)    =       [] ; 
+
+%% Calculate Centroids Of Remaining Particles:
+
+% close all ; imshow(BW)
+% close all ; imshowpair(imadjust(im_original) , BW)
+
+% Using Vectorized Operations like this helps to parallize the code at a
+% later stage:
+
+[x , y]      = cellfun( @(x) ind2sub(CC.ImageSize , x) , ...
+    CC.PixelIdxList' , 'UniformOutput',0 ) ; 
+
+CC.centroid  = [ cellfun(@(x) mean(x) , y) , ...
+    cellfun(@(x) mean(x) , x) ]  ; 
+
+CC.islandDia = cellfun(@(x) sqrt( 4 * numel(x) / pi ) , ...
+    CC.PixelIdxList )' ; 
+
+close all ; 
+im_overlay = imoverlay(im_original , BW , 'yellow') ; 
+imshow(im_overlay) ; hold on ; 
+plot(CC.centroid(:,1) , CC.centroid(:,2) , '.r' , 'MarkerSize', 15) ; 
+
+% close all ; imshow(BW)
+% close all ; imshowpair(imadjust(im_original) , BW)
+
+%%
+ 
+
+
+
+
+
+
+
+
+
+
+

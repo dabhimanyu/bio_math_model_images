@@ -1,6 +1,6 @@
 %% New Main Cell Image Processing Code:
 
-%% NOTE: Sequence Of Running Codes:
+% NOTE: Sequence Of Running Codes:
 % Main Folder (i.e. "bio_math_model_images") contains only 3 mFiles
 
 % Step 1. 
@@ -25,20 +25,13 @@
 % This part of the code frequently changes depending on how results needs
 % to be visualized
 
-%%
+%
 % Clear Workspace is good for our health :)
 clear ; 
 % Clear Screen
 clc ; 
 % Close all figures
-close all ; 
-
-% NOTE to self: STOP BEING LAZY ||-_-|| 
-% and create a seperate Input Text file which
-% contains all these Import and export directories. Then create a function
-% which takes complete file path of the textfile as Input, and returns a
-% single structure or class object which contains all this data
-% Then repleace all this dump of code with that single function call.
+% close all ; 
 
 % Import Directories:
 
@@ -50,11 +43,12 @@ beads_filepath = ['/Users/abhimanyudubey/Pictures' ...
 artificial_Img_FilePath = ['/Users/abhimanyudubey/' ...
     'Pictures/BIO MATH MODEL/gray_0_pt_720_median_filter_added_'] ; 
 
-% %  9069 Path
-% Path For "9069" Real Cell Images :
-% real_cell_img_filepath = ['/Users/abhimanyudubey' ...
-%     '/Pictures/BIO MATH MODEL/001_Real_Img_' ...
-%     'via_reg_max_/002_Raw_Images_From_Video_'] ; 
+% % % 9069 Path 
+% % % For "9069" Real Cell Images :
+
+real_cell_img_filepath = ['/Users/abhimanyudubey' ...
+    '/Pictures/BIO MATH MODEL/001_Real_Img_' ...
+    'via_reg_max_/002_Raw_Images_From_Video_'] ; 
 
 % % 9053 FilePath:
 % Path For "9053" Real Cell Images :
@@ -68,10 +62,10 @@ artificial_Img_FilePath = ['/Users/abhimanyudubey/' ...
 %     'Pictures/BIO MATH MODEL/001_Real_Img_' ...
 %     'via_reg_max_/007_8_Img_Shared_later_'] ; 
 
-% Path For Artificially Created movie to check the working of Tracker:
-real_cell_img_filepath = ['/Users/abhimanyudubey/' ...
-    'Pictures/BIO MATH MODEL/001_Real_Img_via_' ...
-    'reg_max_/008_Translate_and_Track_'] ; 
+% % Path For Artificially Created movie to check the working of Tracker:
+% real_cell_img_filepath = ['/Users/abhimanyudubey/' ...
+%     'Pictures/BIO MATH MODEL/001_Real_Img_via_' ...
+%     'reg_max_/008_Translate_and_Track_'] ; 
 
 % Export Directories:
 
@@ -99,7 +93,7 @@ real_cell_img_tracker_export_dir = ['/Users/abhimanyudubey/' ...
 % real cell image: Makes it easier for me to keep track of all the changes
 % that I made in either one of them via "GIT".
 
-%   1. Code For Processing Artificial Cell Images:
+%%   1. Code For Processing Artificial Cell Images:
 
 % % Processing Of Artificial Images:
 % % clearvars -except -regexp artificial* ; 
@@ -127,38 +121,59 @@ real_cell_img_tracker_export_dir = ['/Users/abhimanyudubey/' ...
 % %         'resolution' , 300 , 'ContentType' , 'image') ; 
 % % end
 
-% % 2. Code For Processing Of Beads:
-% % Processing Beads:
-% % clearvars -except -regexp beads* ; 
-% % [fileNames , onlyFilenames] = Import_all_files_in_a_folder(...
-% %     '.tif' , beads_filepath) ; 
-% % 
-% % for i = 1 : length(onlyFilenames)
-% %     img             =   imread(fullfile(beads_filepath , onlyFilenames{i})) ; 
-% %     im_original     =   img ; 
-% %     [img , BW , CC] =   BW_beads_via_reg_max_(img) ; 
-% %     
-% %     % % % Plot The Images:
-% %     fig = figure(1) ; imshow(im_original) ; hold on ; 
-% %     plot(CC.centroid(: , 1) , CC.centroid(: , 2) , '.' ,...
-% %         'MarkerSize', 10 , 'Color', 'r') ; hold off ; 
-% %     title(sprintf('Showing %i Detected Cells' ,...
-% %         CC.NumObjects) , 'FontSize',22)
-% %     exportgraphics(fig , ...
-% %         fullfile(beads_img_exp_dir , onlyFilenames{i}) ,...
-% %         'resolution' , 300 , 'ContentType' , 'image') ; 
-% % end
-% % 
 
-%   3. Code For Processing Real Cell Images:
+%% Processing Of Beads:
+
+% % 2. Code For Processing Of Beads:
+%%% Processing Beads:
+
+clearvars -except -regexp beads* ; 
+[fileNames , onlyFilenames] = Import_all_files_in_a_folder(...
+    '.tif' , beads_filepath) ; 
+i = 1 ; 
+
+%%
+for i = 1 : length(onlyFilenames)
+
+    %%
+    img             =   imread(fullfile(beads_filepath , onlyFilenames{i})) ; 
+    im_original     =   img ; 
+    [img , BW , CC] =   BW_beads_via_reg_max_(img) ; 
+
+
+%%%%%%%%%% SUPERIMPOSE CENTROID ON IMAGE
+    % Plot The Images:
+    % NOTE: Keep the amount of padding same both Inside the FcN and outside
+    % the function:
+    img_padded = padarray(im_original , [3,3] , 0) ; 
+    fig = figure(1) ; imshow(img_padded) ; hold on ; 
+    plot(CC.centroid(: , 1) , CC.centroid(: , 2) , '.' ,...
+        'MarkerSize', 10 , 'Color', 'r') ; hold off ; 
+    title(sprintf('Showing %i Detected Cells' ,...
+        CC.NumObjects) , 'FontSize',22) ; 
+    exportgraphics(fig , ...
+        fullfile(beads_img_exp_dir , ['a_' , onlyFilenames{i}]) ,...
+        'resolution' , 300 , 'ContentType' , 'image') ; 
+    %%
+end
+
+
+%%   3. Code For Processing Real Cell Images:
+
 % Processing Real Cell Images:
 
-% Clear All Variables Except those  variables which are associated with real cell Images:
+% % % % Clear All Variables Except those  variables which are associated with real cell Images:
 clearvars -except -regexp real* ; 
 % Import "FileNames" and "FullFileNames" of all the png (or tiff) files in
 % the Import Directory
 [fileNames , onlyFilenames] = Import_all_files_in_a_folder(...
     '.tif' , real_cell_img_filepath )  ; 
+
+if isempty(onlyFilenames)
+    [fileNames , onlyFilenames] = Import_all_files_in_a_folder(...
+    '.png' , real_cell_img_filepath )  ;
+end
+
 % Clear All Variables Except those  variables which are associated with
 % real cell Images and the two variables created above
 clearvars -except -regexp real* fileNames  onlyFilenames fileNames; 
@@ -172,6 +187,7 @@ temp                            =       500 ;
 
 % Create a cell array which contains temp number of cells
 centroid_data                   =       cell( numel(fileNames) , 1)  ; 
+mean_intensity_data             =       cell( numel(fileNames) , 1)  ; 
 
 % Fill each cell with a [ temp x 2 ] matrix to store x-y coordinates of
 % "temp" number of centroids. initializing each individual cell like this
@@ -179,15 +195,20 @@ centroid_data                   =       cell( numel(fileNames) , 1)  ;
 centroid_data                   =       cellfun(@(x) zeros(temp , 2) , ...
                                         centroid_data , 'UniformOutput', 0 ) ; 
 
+mean_intensity_data             =       cellfun(@(x) zeros(temp , 1) , ...
+                                        mean_intensity_data , 'UniformOutput', 0 ) ; 
+%
 % Check If a parallel pool is alrady running:
-if isempty(gcp("nocreate"))
-    % If Not then Start a Parallel Pool
-    parpool ; 
-end
+parallel_run_toggle = false ; 
 
+    if ( isempty(gcp("nocreate")) && parallel_run_toggle )
+        % If Not then Start a Parallel Pool
+        parpool ; 
+    end
+%%
 % Initialize "i" for quick individual checks of for loop:
 i = 1  ; 
-
+%
 % Main Parallel For Loop Over all the Image Files starts here:
 
 tic 
@@ -216,12 +237,14 @@ parfor i = 1 : numel(fileNames)
     
 %    Copy The Centroid Data into the variable created earlier:
     centroid_data{i}    =   CC.centroid             ;
+    mean_intensity_data{i}   =   CC.I_mean               ; 
 end
 t(1) = toc % t(1) = Total time taken by the loopp to go over all the images
 
 % Export the relevant variables into your HardDisk:
 save(fullfile(real_cell_img_exp_dir , '002_Cells_Centroid_Data_for_9053') , ...
-    "real_cell_img_exp_dir" , "onlyFilenames" , "centroid_data"); 
+    "real_cell_img_exp_dir" , "onlyFilenames" , "centroid_data" , ...
+    "mean_intensity_data" ) ; 
 
 % DONE, Be Happy....!!  :-)
 
@@ -229,7 +252,5 @@ save(fullfile(real_cell_img_exp_dir , '002_Cells_Centroid_Data_for_9053') , ...
 % % xVal = cellfun(@(x) x(: , 1) , centro)
 % % 
 % % data2export = table()
-
-
 
 %%

@@ -179,8 +179,8 @@ dd = length(xyzs(1,:));
 if nargin==2
     %default values
     memory_b    =   0       ;  % if mem is not needed set to zero,          DEFAULT = 0
-    goodenough  =   3       ;  % if goodenough is not wanted set to zero,   DEFAULT = 0
-    dim         =   dd - 1  ;  %                                            DEFAULT = dd - 1
+    goodenough  =   5       ;  % if goodenough is not wanted set to zero,   DEFAULT = 0
+    dim         =   3 ;% dd - 1  ;  %                                            DEFAULT = dd - 1
     quiet       =   0       ;  %                                            Default = 0
 else
     memory_b    =   param.mem;

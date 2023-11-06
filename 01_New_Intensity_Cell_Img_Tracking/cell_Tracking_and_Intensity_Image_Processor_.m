@@ -1,4 +1,4 @@
-function [ img  ,  BW  , CC ]    =   BW_REAL_cell_img_via_reg_max_(img)
+function [ img  ,  BW  , CC ]    =   cell_Tracking_and_Intensity_Image_Processor_(img)
 %%
 %
 % Input Parameters:
@@ -33,53 +33,23 @@ function [ img  ,  BW  , CC ]    =   BW_REAL_cell_img_via_reg_max_(img)
 %%
 %  Default Kernal Size For Wiener Filter And Median Filter:
 % NOTE To Self: Wiener is an edge preserving, adaptive low-pass filter
-wFiltSize       =   4 ; 
+wFiltSize       =   3 ; 
 medFiltSize     =   2 ; 
 
 im_original = img ; 
 % img = rescale(img) ; 
 
 % Apply 2-d wiener filter
+% figure ; imshowpair( img , img2 , 'montage') ; 
 img2    =   wiener2(img , wFiltSize*[1,1]) ; 
 
-% Do The Thresholding Of the Image: 
-BW_mask =   img2 >18500 ;  %  imshowpair(imadjust(im_original) , BW_mask)
-
-% % % Adaptive Blockwise Thresholding:
-%  figure ; imshow(BW_mask)
-% blockSize =  64*[1,1] ; 
-% otsuFun   =  @(blockStruct) imbinarize(blockStruct.data , 'adaptive' , Sensitivity=0.4) ; 
-% BW_mask   =  blockproc(img2 , blockSize , otsuFun , BorderSize=[0,0] , PadPartialBlocks=false) ; 
-% 
-% % % % % % Dilate mask with default
-% % % % % radius = 4;
-% % % % % decomposition = 0;
-% % % % % se = strel('disk', radius, decomposition);
-% % % % % BW = imdilate(BW, se);
-% % % % % 
-% % % % % % Close mask with default
-% % % % % radius = 5;
-% % % % % decomposition = 0;
-% % % % % se = strel('disk', radius, decomposition);
-% % % % % BW = imclose(BW, se);
-% % % % % 
-% % % % % % Open mask with default
-% % % % % radius = 5;
-% % % % % decomposition = 0;
-% % % % % se = strel('disk', radius, decomposition);
-% % % % % BW = imopen(BW, se);
-% % % % % 
-% % % % % % Dilate mask with default
-% % % % % radius = 2;
-% % % % % decomposition = 0;
-% % % % % se = strel('disk', radius, decomposition);
-% % % % % BW = imdilate(BW, se);
-
+% Do The Thresholding Of the Image:
+BW_mask =   img2 >3500 ;  %  imshowpair(imadjust(im_original) , BW_mask)
 
 % Improve The Mask by using morphological opening and closing operations:
-BW_mask =   imclose(BW_mask  , strel('disk' , 100) ) ; 
-BW_mask =   imdilate(BW_mask , strel('disk' , 005) ) ; 
-BW_mask =   imopen( BW_mask  , strel('disk' , 4  ) ) ; 
+BW_mask =   imclose(BW_mask , strel('disk' , 6  ) ) ; 
+BW_mask =   imdilate(BW_mask, strel('disk' , 3  ) ) ; 
+BW_mask =   imopen( BW_mask , strel('disk' , 4  ) ) ; 
 
 % Whatever Pixels are not contained in Mask, assign zero Value to them:
 % This eliminates Unwanted Pixels and reduces the Image Size Significantly.
@@ -88,15 +58,24 @@ img2 = img ;
 
 % Now Applying Filters On the Remaining Part Of the Image
 % First 2-D Wiener, then sharpening, and the finally median filter.
+% figure ; imshow(img2 , []) ; 
+% figure ; imshowpair(img , img2 , 'montage') ; 
+
 img2 = wiener2(img2 , wFiltSize*[1,1] ) ; 
 img2 = imsharpen(img2 , 'radius' , ...
     1.05 , 'amount' , 1.6 , 'Threshold' , 0.7) ;
 img2 = medfilt2(img2 , medFiltSize*[1,1] ) ; 
 
+img2 = imgaussfilt(img2 , 0.5 , 'FilterSize', 3) ; 
+
 % Regional Maxima 
 BW = imregionalmax( rescale(img2) , 4) ; 
-%  im_fused = imfuse(img2 , BW) ; 
-%  figure ; imshow(im_fused , [] )
+
+% im_overlay = imoverlay(img2 , BW , 'red') ; 
+% figure ; imshow(im_overlay , [] ) ; 
+% I1 = imresize(img2 , 5) ; 
+% I2 = imresize(im_overlay , 5) ; 
+% close all ;  figure ; imshowpair(I1 , I2 , 'montage') ; 
 
 % Segment The Image to Identify the islands contained in the image:
 % CC = connected components
@@ -106,7 +85,6 @@ CC      =       bwconncomp(BW , 4)  ;
 % Step:
 [y , x] =       cellfun( @(x) ind2sub([CC.ImageSize] , x) , ...
                 CC.PixelIdxList' , 'UniformOutput',0 ) ; 
-
 CC.centroid  =  uint8( [ cellfun(@(x) mean(x) , x) , cellfun(@(x) mean(x) , y) ] )  ; 
 
 img = img2 ; 
@@ -137,8 +115,14 @@ function [mean_intensity_at_centroid] = mean_intensity_calculator(...
     for i = 1 : size(c , 1)
         y = c(i , 1) ; 
         x = c(i , 2) ; 
-        I_mean(i , 1) = mean( [ I(x-1 , y) , I(x , y) , I(x+1 , y) , ...
-                            I(x , y-1) , I(x , y+1) ] ) ; 
+
+        try
+            I_mean(i , 1) = mean( [ I(x-1 , y) , I(x , y) , I(x+1 , y) , ...
+                                I(x , y-1) , I(x , y+1) ] ) ; 
+        catch
+            % In Case Of Boundary Particle I_mean(x,y) = I(x,y)
+            I_mean(i , 1) = I(x,y) ; 
+        end
     end
 
     mean_intensity_at_centroid = I_mean ; 
