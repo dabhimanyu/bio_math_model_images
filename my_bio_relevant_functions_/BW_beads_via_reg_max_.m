@@ -1,147 +1,204 @@
-function [ img  ,  BW  , CC ]    =   BW_beads_via_reg_max_( img )
-
-%% Inout Paramaters:
-
-wFiltSize   =   3 ;     % 2 for real Images:
-medFiltSize =   3 ;   % 2 For Real Images:
-
+function [ img  ,  BW  , CC ]    =   BW_REAL_cell_img_via_reg_max_(img)
 %%
+%
+% Input Parameters:
+% img: image matrix
+% 
+% Output Parameters:
+%       1. img: Final 16-bit Gray-Image After Image Processing
+%       2. BW:  Binarized Image showing the location of centroids
+%               identified by the regional maxima algorithm
+%       3. CC:  a.k.a connected components, is a structure containg 5 elements. 
+%           (1) Connectivity: Connectivity Index used for 
+%                               identification of islands
+%           (2) ImageSize   : Size Of the Image
+%           (3) NumObjects  : Number of islands identified in the image
+%           (4) PixelIdxList: Linear Pixel Index List for the pixels of
+%                               each island
+%           (5) centroid    : X-Y Coordinates of all CC.NumObjects islands 
+% 
+% 
+% WRITTEN BY
+%
+% Abhimanyu Dubey
+% Joint Ph.D. student,
+% Prof. V. Kumaran’s Lab
+% Department of Chemical Engineering,
+% IISc Bangalore, 
+% Prof. Manaswita Bose’s Lab,
+% Department of Energy Science and Engineering,
+% IIT-BOMBAY
+% 
+%%
+%  Default Kernal Size For Wiener Filter And Median Filter:
+% NOTE To Self: Wiener is an edge preserving, adaptive low-pass filter
+wFiltSize       =   4 ; 
+medFiltSize     =   2 ; 
 im_original = img ; 
+% img = rescale(img) ; 
+% Apply 2-d wiener filter
+img2    =   wiener2(img , wFiltSize*[1,1]) ; 
+% Do The Thresholding Of the Image: 
+BW_mask =   img2 >18500 ;  %  imshowpair(imadjust(im_original) , BW_mask)
+% % % Adaptive Blockwise Thresholding:
+%  figure ; imshow(BW_mask)
+% blockSize =  64*[1,1] ; 
+% otsuFun   =  @(blockStruct) imbinarize(blockStruct.data , 'adaptive' , Sensitivity=0.4) ; 
+% BW_mask   =  blockproc(img2 , blockSize , otsuFun , BorderSize=[0,0] , PadPartialBlocks=false) ; 
+% 
+% % % % % % Dilate mask with default
+% % % % % radius = 4;
+% % % % % decomposition = 0;
+% % % % % se = strel('disk', radius, decomposition);
+% % % % % BW = imdilate(BW, se);
+% % % % % 
+% % % % % % Close mask with default
+% % % % % radius = 5;
+% % % % % decomposition = 0;
+% % % % % se = strel('disk', radius, decomposition);
+% % % % % BW = imclose(BW, se);
+% % % % % 
+% % % % % % Open mask with default
+% % % % % radius = 5;
+% % % % % decomposition = 0;
+% % % % % se = strel('disk', radius, decomposition);
+% % % % % BW = imopen(BW, se);
+% % % % % 
+% % % % % % Dilate mask with default
+% % % % % radius = 2;
+% % % % % decomposition = 0;
+% % % % % se = strel('disk', radius, decomposition);
+% % % % % BW = imdilate(BW, se);
+% Improve The Mask by using morphological opening and closing operations:
+BW_mask =   imclose(BW_mask  , strel('disk' , 100) ) ; 
+BW_mask =   imdilate(BW_mask , strel('disk' , 005) ) ; 
+BW_mask =   imopen( BW_mask  , strel('disk' , 4  ) ) ; 
+% Whatever Pixels are not contained in Mask, assign zero Value to them:
+% This eliminates Unwanted Pixels and reduces the Image Size Significantly.
+img(~BW_mask)  = 0 ; 
 img2 = img ; 
-img2    =       imadjust(img) ; 
-img2    =       wiener2(img2 , wFiltSize*[1,1]) ;     % figure(1) ; imshow(img) ; 
-
-% To remobe boundary artifacts:
-img2    =       padarray(img2 , [3,3] , 0) ; 
-im_original    =       padarray(im_original , [3,3] , 0) ; 
-% img2    =       imsharpen(img2 , 'radius' , 1.05 ,...    % figure(2) ; imshow(img2) ; 
-%                 'amount' , 1.6 , 'threshold', 0.7 ) ;       % figure(3) ; imshow(img2) ; 
-% img2    =       medfilt2(img2 , medFiltSize*[1,1] ) ;    % figure(4) ; imshow(img2) ; 
-
-% Generate Mask:
-% Thresh Of 130-150 Seems To Work:
-% artificial_img_thresh = 5e3 ;      % figure(1) ; imshow(img) ; 
-% BW = img2 > artificial_img_thresh ;  % figure(11); imshowpair(img2 , BW) ; 
-% img(~BW) = 0 ;                      % figure(2) ; imshow(img) ; 
-
-% Eliminate everything from the image except for the Islands:
-% img2    =       imadjust(img2) ; 
-BW      =       imbinarize(img2 , 'adaptive' , 'Sensitivity', 0 , ...
-                'ForegroundPolarity','bright') ;
-% Open BW with Square SE:
-% BW      =       imopen(BW , strel('square' , 3)) ; 
-BW      =       imfill(BW , 'holes') ; 
-im_original(~BW) = 0 ; 
-img = im_original ; 
-
-img = imadjust(img)     ;       % figure(4) ; imshow(img , [] ) ; 
-
-% img     =       imhmin(img , 10 , 4) ; 
-
-img(img<6000) = 0 ; 
-img     =       wiener2(img , (wFiltSize-1)*[1,1]) ; 
-img     =       imgaussfilt(img , 0.7 ,'Padding' , 'symmetric' ) ;  % , "FilterSize", 3 ) ; %  
-img     =       medfilt2(img , (-1+medFiltSize)*[1,1] ) ;
-
-% % % % % % Formulate Distance Matrix:
-% watershed_thresh = 1 ; 
-% BW2 = imbinarize(img)
-% d               =       imcomplement(bwdist(~BW)) ; 
-% 
-% % % % % H-Min Transform To Eliminate smaller peaks:
-% d               =       imhmin(d , watershed_thresh) ; 
-% 
-% particleSep     =       watershed(d) ; % NOTE that particleSep is a labelMatrix
-% particleSep(~BW_ws) = 0 ; 
-% 
-% BW_ws              =       particleSep > 0 ;    % Binarizing Label Matrix
-% img(~BW_ws)        =       0  ;  
-% img             =       reshape(img , size(img , 1) , [] )  ; 
-
-
-% img     =       imhmax(img , 2 , 8)     ; 
-BW      =       imregionalmax(img , 8)  ;      % figure(11) ; imshowpair(img , BW) ; 
-BW      =       imfill(BW , "holes")    ; 
-
-% Initial Connected Component:
+% Now Applying Filters On the Remaining Part Of the Image
+% First 2-D Wiener, then sharpening, and the finally median filter.
+img2 = wiener2(img2 , wFiltSize*[1,1] ) ; 
+img2 = imsharpen(img2 , 'radius' , ...
+    1.05 , 'amount' , 1.6 , 'Threshold' , 0.7) ;
+img2 = medfilt2(img2 , medFiltSize*[1,1] ) ; 
+% Regional Maxima 
+BW = imregionalmax( rescale(img2) , 4) ; 
+%  im_fused = imfuse(img2 , BW) ; 
+%  figure ; imshow(im_fused , [] )
+% Segment The Image to Identify the islands contained in the image:
+% CC = connected components
 CC      =       bwconncomp(BW , 4)  ; 
-
-% Calculate Size Of the Islands:
-CC.islandSize    =       cellfun(@numel , CC.PixelIdxList)' ;
-
-% % % % CC.meanIntensity =       cellfun(@mean  , ) 
-% % % CCws            =       CC ; % Creating a copy of CC, WS -> WaterShed 
-% % % 
-% % % % Eliminate Islands with size less than size_thresh
-% % % min_island_size = 01 ; 
-% % % max_island_size = 05 ; 
-% % % 
-% % % % Determine the erroneous Islands:
-% % % chotu_islands   =       find( ~( (CC.islandSize <  min_island_size) | (CC.islandSize > max_island_size) ) ) ; 
-% % % faltu_islands   =       find(  ( (CC.islandSize <  min_island_size) | (CC.islandSize > max_island_size) ) ) ; 
-% % % 
-% % % %Create Chotu island BW:
-% % % BW_4_chotu_islands = zeros(CC.ImageSize) ; 
-% % % BW_4_faltu_islands = BW_4_chotu_islands  ;
-% % % 
-% % % BW_4_chotu_islands(cell2mat(CC.PixelIdxList(chotu_islands).')) = 1 ; 
-% % % BW_4_faltu_islands(cell2mat(CC.PixelIdxList(faltu_islands).')) = 1 ; 
-% % % 
-% % % % No need to alter the small islands :)
-% % % BW_4_faltu_islands =  imdilate(BW_4_faltu_islands , strel('disk' , 1) ) ;
-% % % 
-% % % % Figure out why these code lines are  NOT Working:
-% % % % img_4_chotu_islands = img ; 
-% % % % img_4_chotu_islands = img_4_chotu_islands(:) ; 
-% % % % img_4_chotu_islands(~BW_4_chotu_islands(:)) = uint16(0) ; 
-% % % % 
-% % % % img_4_faltu_islands = img ; 
-% % % % img_4_faltu_islands(~BW_4_faltu_islands) = uint16(0) ; 
-% % % 
-% % % % Create Bounding Box over the components:
-% % % 
-% % % CC_4_faltu_islands = bwconncomp(BW_4_faltu_islands , 4) ; 
-% % % % CC_4_faltu_islands =  
-% % % props = regionprops(CC_4_faltu_islands , 'BoundingBox' , 'Image') ;
-% % % 
-% % % BW_ws = BW ;  % BW waterShed
-% % % 
-% % %  % Remove these islands from the Binarized Mask and update CC accordingly:         
-% % %         for i = 1 : length(faltu_islands)
-% % %             BW_ws( CC.PixelIdxList{ faltu_islands(i) } )   =   false   ; 
-% % %         end
-% % % 
-% % % % Formulate Distance Matrix:
-% % % watershed_thresh = 1 ; 
-% % % d               =       imcomplement(bwdist(~BW_ws)) ; 
-% % % 
-% % % % H-Min Transform To Eliminate smaller peaks:
-% % % d               =       imhmin(d , watershed_thresh) ; 
-% % % 
-% % % particleSep     =       watershed(d) ; % NOTE that particleSep is a labelMatrix
-% % % particleSep(~BW_ws) = 0 ; 
-% % % 
-% % % BW_ws              =       particleSep > 0 ;    % Binarizing Label Matrix
-% % % % img(~BW_ws)        =       0  ;  
-% % % % img             =       reshape(img , size(img , 1) , [] )  ; 
-
-% %         %%%% Visualize Distance Matrix:
-% %         figure(53) ; clf ;
-% %         imshow(d , [] ) ; 
-% %         imshow(d(I1 , I2)) ; 
-% %         imshow(d(I1 , I2) , [] ) ; 
-% %         title('\fontsize{20} Distance Matrix (D)')
-
-%  To make 
-[x , y] =       cellfun( @(x) ind2sub(CC.ImageSize , x) , ...
+% Calculate the centroids Of All the Islands identified in the previous
+% Step:
+[y , x] =       cellfun( @(x) ind2sub([CC.ImageSize] , x) , ...
                 CC.PixelIdxList' , 'UniformOutput',0 ) ; 
-CC.centroid  = [ cellfun(@(x) mean(x) , y) , cellfun(@(x) mean(x) , x) ]  ; 
-
-pj_break = 3 ; 
+CC.centroid  =  uint8( [ cellfun(@(x) mean(x) , x) , cellfun(@(x) mean(x) , y) ] )  ; 
+img = img2 ; 
+% Calculate Mean Intensities At the Centroids:
+mean_intensity_at_centroid = mean_intensity_calculator(...
+    img2 , CC.centroid) ; 
+% Apply SubPixel Estimator: 
+% Implemented from one of the papers which you have shared with Aishwarya
+% Complete Reference To The Paper is written below:
+CC.centroid = subpixel_2d_gauss(CC.centroid , img2 ) ; 
+CC.I_mean = mean_intensity_at_centroid ; 
+pj_break = 2 ; 
 end
-
-
-
-
-
-
+function [mean_intensity_at_centroid] = mean_intensity_calculator(...
+    img , centroid)
+    
+    % Declaring new variables for quick easy use
+    c = centroid ; 
+    I = img ; 
+    I_mean = zeros(size(c , 1) , 1 ) ; 
+    
+    for i = 1 : size(c , 1)
+        y = c(i , 1) ; 
+        x = c(i , 2) ; 
+        I_mean(i , 1) = mean( [ I(x-1 , y) , I(x , y) , I(x+1 , y) , ...
+                            I(x , y-1) , I(x , y+1) ] ) ; 
+    end
+    mean_intensity_at_centroid = I_mean ; 
+end % end of mean_intensity_calculator
+function [ xy_vector , intensity_vec ] = ...
+    subpixel_2d_gauss(centroid_xy , par_img)
+%% Paper Reference:
+% 2D Subpixel estimator based on, 
+% H. Nobach and M. Honkanen (2005)
+% Two-dimensional Gaussian regression for sub-pixel displacement
+% estimation in particle image velocimetry or particle position
+% estimation in particle tracking velocimetry
+% Experiments in Fluids (2005) 38: 511-515
+%% Simple 2-D Gaussian Subpixel Estimator:
+par_img = rescale(par_img) ; 
+% Low Pass Gaussian Filtered Image:
+par_img = imgaussfilt(par_img , 1.0 , 'FilterSize', 3) ; 
+x = double( centroid_xy(: , 1) ) ; 
+y = double( centroid_xy(: , 2) ) ; 
+[nrows , ncols] = size(par_img) ; 
+% Linear Indicies of the XY Coordinate:
+ip      =   sub2ind(size(par_img) , y , x ) ; 
+xmax    =   size(par_img , 1) ; 
+% Eliminate erronious coordinates:
+xi = ~( (x >= 2) & (y >= 2) & (x <= ncols-1) & (y <= nrows-1 ) )  ; 
+x(xi) = [] ; 
+y(xi) = [] ; 
+c10 = zeros(3 , 3 , numel(x) ) ; 
+c01 = c10;
+c11 = c10;
+c20 = c10;
+c02 = c10;
+if ( numel(x) ~= 0 )
+    for i = -1 : 1
+        for j = -1 : 1
+		    c10(j+2,i+2, :) = i*log(par_img(ip+xmax*i+j));
+			c01(j+2,i+2, :) = j*log(par_img(ip+xmax*i+j));
+			c11(j+2,i+2, :) = i*j*log(par_img(ip+xmax*i+j));
+			c20(j+2,i+2, :) = (3*i^2-2)*log(par_img(ip+xmax*i+j));
+			c02(j+2,i+2, :) = (3*j^2-2)*log(par_img(ip+xmax*i+j));
+			%c00(j+2,i+2)=(5-3*i^2-3*j^2)*log(par_img(maxY+j, maxX+i));
+        end
+    end
+end
+% Replace Inf By Zero:
+c10(isinf(c10)) = 0 ; 
+c01(isinf(c01)) = 0 ; 
+c11(isinf(c11)) = 0 ; 
+c20(isinf(c20)) = 0 ; 
+c02(isinf(c02)) = 0 ; 
+% c00(isinf(c00)) = 0 ;
+% Replace NaN by Zero:
+c10(isnan(c10)) = 0 ; 
+c01(isnan(c01)) = 0 ; 
+c11(isnan(c11)) = 0 ; 
+c20(isnan(c20)) = 0 ; 
+c02(isnan(c02)) = 0 ; 
+% c00(isnan(c00)) = 0 ; 
+% Now compute the coefficients:
+% as per equations 12-17 of the paper:
+c10 = (1/6) * squeeze(sum(sum(c10 , 1) , 2)) ; 
+c01 = (1/6) * squeeze(sum(sum(c01 , 1) , 2)) ; 
+c11 = (1/4) * squeeze(sum(sum(c11 , 1) , 2)) ; 
+c20 = (1/6) * squeeze(sum(sum(c20 , 1) , 2)) ; 
+c02 = (1/6) * squeeze(sum(sum(c02 , 1) , 2)) ; 
+% c00 = (1/9) * squeeze(sum(sum(c00 , 1) , 2)) ; 
+deltax = ((c11.*c01-2*c10.*c02)./(4*c20.*c02-c11.^2)) ;
+deltay = ((c11.*c10-2*c01.*c20)./(4*c20.*c02-c11.^2)) ;
+% Eliminate NaNs:
+deltax(isnan(deltax)) = 0 ; 
+deltay(isnan(deltay)) = 0 ; 
+% Normalise The Deltas By their Norm 
+% so that their values lies b/t (0,1):
+deltax = deltax ./ (deltax'*deltax)^0.5 ; 
+deltay = deltay ./ (deltay'*deltay)^0.5 ; 
+SubpixelX = x + deltax;
+Subpixely = y + deltay;
+%% Calculate Intensities At These SubPixel Points:
+% FINISH ME....!! 
+% U Lazy fellow ||-_-||
+%%
+xy_vector = [SubpixelX , Subpixely] ; 
+pj_break = 'break_point' ; 
+end

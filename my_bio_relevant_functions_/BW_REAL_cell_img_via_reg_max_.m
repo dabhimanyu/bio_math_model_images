@@ -1,5 +1,6 @@
 function [ img  ,  BW  , CC ]    =   BW_REAL_cell_img_via_reg_max_(img)
 %%
+%%
 %
 % Input Parameters:
 % img: image matrix
@@ -33,7 +34,7 @@ function [ img  ,  BW  , CC ]    =   BW_REAL_cell_img_via_reg_max_(img)
 %%
 %  Default Kernal Size For Wiener Filter And Median Filter:
 % NOTE To Self: Wiener is an edge preserving, adaptive low-pass filter
-wFiltSize       =   4 ; 
+wFiltSize       =   5 ; 
 medFiltSize     =   2 ; 
 
 im_original = img ; 
@@ -78,8 +79,8 @@ BW_mask =   img2 >18500 ;  %  imshowpair(imadjust(im_original) , BW_mask)
 
 % Improve The Mask by using morphological opening and closing operations:
 BW_mask =   imclose(BW_mask  , strel('disk' , 100) ) ; 
-BW_mask =   imdilate(BW_mask , strel('disk' , 005) ) ; 
-BW_mask =   imopen( BW_mask  , strel('disk' , 4  ) ) ; 
+BW_mask =   imdilate(BW_mask , strel('disk' , 014) ) ; 
+BW_mask =   imopen( BW_mask  , strel('disk' , 3  ) ) ; 
 
 % Whatever Pixels are not contained in Mask, assign zero Value to them:
 % This eliminates Unwanted Pixels and reduces the Image Size Significantly.
@@ -88,12 +89,13 @@ img2 = img ;
 
 % Now Applying Filters On the Remaining Part Of the Image
 % First 2-D Wiener, then sharpening, and the finally median filter.
-img2 = wiener2(img2 , wFiltSize*[1,1] ) ; 
-img2 = imsharpen(img2 , 'radius' , ...
-    1.05 , 'amount' , 1.6 , 'Threshold' , 0.7) ;
-img2 = medfilt2(img2 , medFiltSize*[1,1] ) ; 
+img2 = wiener2(img2   , wFiltSize*[1,1] ) ; 
+img2 = imsharpen(img2 , 'radius' , 1.3 , 'amount' , 1.8 , 'Threshold' , 0.9) ;
+img2 = medfilt2(img2  , medFiltSize*[1,1] , "symmetric") ; 
 
 % Regional Maxima 
+img2     =       imhmax(img2 , 1200, 8)     ; 
+% tpj     =       imhmax(img , 10 , 8)     ; 
 BW = imregionalmax( rescale(img2) , 4) ; 
 %  im_fused = imfuse(img2 , BW) ; 
 %  figure ; imshow(im_fused , [] )
