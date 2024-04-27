@@ -16,21 +16,29 @@ clc ;
 
 
 % Import Centroid Data:
-filepath_centroid = ['/Users/' ...
-    'abhimanyudubey/' ...
-    'Pictures/BIO MATH MODEL/' ...
-    '002_NEW_Exp movies/' ...
-    '001_First_Trial_Export_'] ; 
-
-inspection_filepath = ['/Users/' ...
-    'abhimanyudubey/Pictures/' ...
+filepath_centroid = [
+    '/Users/abhimanyudubey/Pictures/' ...
     'BIO MATH MODEL/' ...
-    '002_NEW_Exp movies/001_zInspection_'] ; 
+    '001_Real_Img_via_reg_max_/' ...
+    '009_New_Images_FOR_PAPER_REVIEW_/' ...
+    '005_Real_Cell_Images_For_Review_'
+    ] ; 
 
-export_tracking_Data =  ['/Users/' ...
-    'abhimanyudubey/Pictures/' ...
-    'BIO MATH MODEL/002_NEW_Exp movies/' ...
-    '001_First_Trial_zTracking_Export_'] ; 
+inspection_filepath = [
+    '/Users/abhimanyudubey/' ...
+    'Pictures/BIO MATH MODEL/' ...
+    '001_Real_Img_via_reg_max_/' ...
+    '009_New_Images_FOR_PAPER_REVIEW_/' ...
+    '001_MATLAB_EDITED_IMAGES_'
+    ] ; 
+
+export_tracking_Data =  [
+    '/Users/abhimanyudubey/' ...
+    'Pictures/BIO MATH MODEL/' ...
+    '001_Real_Img_via_reg_max_/' ...
+    '009_New_Images_FOR_PAPER_REVIEW_/' ...
+    '001_MATLAB_EDITED_IMAGES_'
+    ] ; 
 
 % Import Centroid Data For Tracker:
 [fileNames , ~] = Import_all_files_in_a_folder( ...
@@ -48,11 +56,14 @@ mean_intensity_data             =       cellfun(@(x) zeros(temp , 1) , ...
 intensity_Matrix                =       zeros(length(c(: , 1)) ,...
                                               length(fileNames) ) ; 
 
+[fileNames , ~] = Import_all_files_in_a_folder( ...
+    '.tif' , filepath_centroid) ; 
+%%
 i = 1 ; 
 %
 tic
 
-parfor i = 1 : length(fileNames)
+for i = 1 : length(fileNames)
 
     img                     =       imread(fileNames{i}) ;   % imshow(imresize(img , 8))
     I                       =       mean_intensity_calculator_2(img , c) / (65535) ;  % c -> Floor of centroid data
@@ -69,7 +80,7 @@ intensity_Matrix = (intensity_Matrix * 255 ) ;
 clearvars -except intensity_Matrix export_tracking_Data
 
 close all ;
-i = 73 ;  
+i = 2 ;  
 fig = figure(1) ; clf ; 
 t = tiledlayout(2,1 , 'TileSpacing','compact' , Padding='compact') ; 
 nexttile
@@ -118,19 +129,22 @@ end
 
 writematrix(intensity_Matrix , 'mean_Intensity_Data_Matrix.csv') ; 
 %% Print Particle-Id On Particle Image:
+[fileNames , ~] = Import_all_files_in_a_folder( ...
+    '.tif' , filepath_centroid) ; 
 
-% % img = imread(fileNames{1}) ; 
-% % par_idx = 1 : size(c , 1) ; 
-% % idx = 71:73 ; 
-% % close all ; figure(1) ; clf ; 
-% % img_with_text = insertText(img , c(idx , :) , par_idx(idx) , ...
-% %     'AnchorPoint' , 'Center' , 'fontsize' , 8 , 'BoxOpacity',0 , ...
-% %     'TextColor','red') ;
-% % 
-% % img_with_text = imresize(img_with_text , 10) ; 
-% % imshow(img_with_text) ; 
-% % 
-% % imwrite(img_with_text , 'img_08' , 'png')
+img = imread(fileNames{1}) ; 
+par_idx = 1 : size(c , 1) ; 
+idx = 61:62 ; 
+close all ; figure(1) ; clf ; 
+
+img_with_text = insertText(img , c(idx , :) , par_idx(idx) , ...
+    'AnchorPoint' , 'Center' , 'fontsize' , 8 , 'BoxOpacity',0 , ...
+    'TextColor','red') ;
+
+img_with_text = imresize(img_with_text , 10) ; 
+imshow(img_with_text) ; 
+
+imwrite(img_with_text , 'img_13' , 'png')
 
 %%
 
