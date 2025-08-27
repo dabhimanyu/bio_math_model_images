@@ -1,4 +1,4 @@
-function [ img  ,  BW  , CC ]    =   BW_REAL_cell_img_via_reg_max_(img)
+function [ img  ,  BW  , CC ]    =   BW_beads_via_reg_max_(img)
 %%
 %
 % Input Parameters:
