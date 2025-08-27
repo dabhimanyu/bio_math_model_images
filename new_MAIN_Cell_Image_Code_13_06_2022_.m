@@ -33,22 +33,24 @@ clc ;
 % Close all figures
 % close all ; 
 
+% Folder containing the matlab code:
+cd( fullfile('/Users/abhimanyudubey/MATLAB-Drive/CRAP/bio_math_model_images') )  ; 
+
 % Import Directories:
 
 % Path For Beads Image:
-beads_filepath = ['/Users/abhimanyudubey/Pictures' ...
-    '/BIO MATH MODEL/0009_0016_beads_images_256X256'] ; 
+beads_filepath = fullfile( ['/Users/abhimanyudubey/Pictures' ...
+    '/BIO MATH MODEL/0009_0016_beads_images_256X256'] ) ; 
 
 % Path For artificially Generated Images:
-artificial_Img_FilePath = ['/Users/abhimanyudubey/' ...
-    'Pictures/BIO MATH MODEL/gray_0_pt_720_median_filter_added_'] ; 
+artificial_Img_FilePath = fullfile( ['/Users/abhimanyudubey/' ...
+    'Pictures/BIO MATH MODEL/gray_0_pt_720_median_filter_added_'] ) ; 
 
 % % % 9069 Path 
 % % % For "9069" Real Cell Images :
-
-real_cell_img_filepath = ['/Users/abhimanyudubey' ...
+real_cell_img_filepath = fullfile( ['/Users/abhimanyudubey' ...
     '/Pictures/BIO MATH MODEL/001_Real_Img_' ...
-    'via_reg_max_/002_Raw_Images_From_Video_'] ; 
+    'via_reg_max_/002_Raw_Images_From_Video_'] ) ; 
 
 % % 9053 FilePath:
 % Path For "9053" Real Cell Images :
@@ -71,27 +73,28 @@ real_cell_img_filepath = ['/Users/abhimanyudubey' ...
 
 % Path to Store Artificially generated Images:
 artificial_img_exp_dir = ...
-    ['/Users/abhimanyudubey/Pictures/BIO MATH MODEL/gray_0_pt_' ...
-    '720_median_filter_added_/Artificial_Img_Export_'] ; 
+    fullfile( ['/Users/abhimanyudubey/Pictures/BIO MATH MODEL/gray_0_pt_' ...
+    '720_median_filter_added_/Artificial_Img_Export_'] ); 
 
 % Path To Export Beads:
-beads_img_exp_dir = ['/Users/abhimanyudubey/' ...
+beads_img_exp_dir = fullfile( ['/Users/abhimanyudubey/' ...
     'Pictures/BIO MATH MODEL/0009_0016_beads_' ...
-    'images_256X256/Beads_Result_Export'] ; 
+    'images_256X256/Beads_Result_Export'] ) ; 
 
 % Path To Export Real Cell Images:
-real_cell_img_exp_dir = ['/Users/abhimanyudubey/Pictures/BIO ' ...
+real_cell_img_exp_dir = fullfile( ['/Users/abhimanyudubey/Pictures/BIO ' ...
     'MATH MODEL/001_Real_Img_via_reg_max_/004_' ...
-    'Matlab_Edited_Images_'] ; 
+    'Matlab_Edited_Images_'] ); 
 
 % Path To Export Tracking Data:
-real_cell_img_tracker_export_dir = ['/Users/abhimanyudubey/' ...
+real_cell_img_tracker_export_dir = fullfile( ['/Users/abhimanyudubey/' ...
     'Pictures/BIO MATH MODEL/001_Real_Img_via_reg_' ...
-    'max_/005_Matlab_Tracker_Export_'] ; 
+    'max_/005_Matlab_Tracker_Export_'] ); 
 
 % I'VE created a single file for beads image, artificial image, and for
 % real cell image: Makes it easier for me to keep track of all the changes
 % that I made in either one of them via "GIT".
+
 
 %%   1. Code For Processing Artificial Cell Images:
 
