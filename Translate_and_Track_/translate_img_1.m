@@ -6,6 +6,11 @@ clc ;
 % filepath = ['/Users/abhimanyudubey' ...
 %     '/Pictures/BIO MATH MODEL/001_Real_Img_via_' ...
 %     'reg_max_/006_Raw_Img_From_9053_Video_'] ; 
+
+% CRITICAL: Kindly check the filepaths carefully before running the code
+% In my experience, these are the most common mistake that people do while 
+% running these codes
+
 filepath = fullfile(['/Users/abhimanyudubey/Pictures/BIO MATH MODEL/' ...
     '001_Real_Img_via_reg_max_/008_Translate_and_' ...
     'Track_/009_Images_For_5_New_Movie']) ; 
@@ -18,13 +23,27 @@ output_dir = fullfile(['/Users/abhimanyudubey/Pictures/BIO ' ...
 [filenames , onlyFilenames] = ...
     Import_all_files_in_a_folder('.png' , filepath) ; 
 
-% Extract filepath , filenames , and file extension :
-img_num = 5 ; 
+%% Extract filepath , filenames , and file extension :
+
+% We'll be making use of the first file here for our purposes and use it
+% it for creating translated images. 
+img_num = 1 ; 
 img = imread(filenames{img_num}) ; 
 [~ , iName , iext] = fileparts(filenames{img_num}) ; clear img_num  ; 
 
-% Decide The Distance Moved:
+% Decide The Distance Moved: dx and dy tells it the amount of translation
+% in x and y directions respectively. Both distances are in pixels
+% CRITICAL: Avoid giving it less than one pixel values or else you'll get
+% into the realm of "subpixel uncertainities" for the lack of better word.
+
+% amount of translation in x and y directions (in Pixels):
+% In case you need real distance travelled, multiply these pixel values
+% with an appropiate calibration factor with like a factor in microns per
+% pixel, to get real distance travelled. It depends on your imaging system.
 dx = 1.0 ; dy = 1.0 ; 
+
+% Evaluating L2 Norm (Eucledian Norm), which gives us the amount of
+% distance travelled as per these given values:
 dist_moved = sqrt(dx^2 + dy^2) ; 
 
 % Decide The Number Of Images In the Series:
