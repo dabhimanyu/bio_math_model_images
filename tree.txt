@@ -1,77 +1,4 @@
 .
-├── 00_OLD_WORK_
-│   ├── 001_Artificial_Img.tiff
-│   ├── 001_Validation_Of_Code
-│   │   ├── Artificial_Img_From_Beads.m
-│   │   ├── Img_GN_0.700_.tif
-│   │   ├── Img_GN_0.705_.tif
-│   │   ├── Img_GN_0.710_.tif
-│   │   ├── Img_GN_0.715_.tif
-│   │   ├── Img_GN_0.720_.tif
-│   │   ├── Import_all_files_in_a_folder.m
-│   │   ├── Median_Filtered_Images_Shared_by_Aishwariya.m
-│   │   ├── Real_Number_Density.pdf
-│   │   ├── Real_size_dist_2_All_Frame.pdf
-│   │   ├── Real_size_dist_2_Single_Frame.pdf
-│   │   ├── Seperated_Particles_BN_0pt0_GN_1pt0.tif
-│   │   ├── a_Validating_My_Image_Processing_Algo.m
-│   │   ├── bio_watershed_segmentation_4validation.m
-│   │   ├── cell_image_BW_preprocessor_4validation.m
-│   │   └── myImg.png
-│   ├── 002_Artificial_Img.tiff
-│   ├── 002_Beads_Images
-│   │   ├── A.tif
-│   │   ├── B.tif
-│   │   ├── Beads_MAIN_Identification_And_Tracker_Code.m
-│   │   ├── Data_for_1st_Image_Magnified_5_times.txt
-│   │   ├── Data_for_1st_Image_Magnified_5_times_2.txt
-│   │   ├── Img_GN_0.715_.tif
-│   │   ├── Import_all_files_in_a_folder.m
-│   │   ├── Tracker_Output.mat
-│   │   ├── bio_watershed_segmentation_4_BEADS.m
-│   │   ├── calculate_dx_and_dy_from_tracking_output.m
-│   │   ├── cell_image_BW_preprocessor_4_BEADS.m
-│   │   ├── make_tracking_input_file_4BEADS.m
-│   │   ├── myImg.png
-│   │   ├── remove_nearBy_islands_4BEADS.m
-│   │   ├── size_dist_2.pdf
-│   │   ├── size_dist_21.pdf
-│   │   ├── size_dist_2222.pdf
-│   │   ├── track.m
-│   │   └── xyuvtIdx_data.mat
-│   ├── 003_Artificial_Img.tiff
-│   ├── 003_Real_Images
-│   │   ├── inspecting_real_images.m
-│   │   ├── real_cell_img_BW_processor.m
-│   │   └── z_002_Real_Img_2nd_Iteration_With_Aishwarya_05_05_2022_.m
-│   ├── Extra_Material
-│   │   ├── Dimension_Reduction_In_EEG_Data_.m
-│   │   ├── Relevant_Bio_Math_Tracking_Data.mat
-│   │   ├── Understanding_PCA.m
-│   │   ├── emptyEEG.mat
-│   │   ├── sampleEEGdata.mat
-│   │   └── topoplotIndie.m
-│   ├── Img_GN_0.715_.tif
-│   ├── README.md
-│   ├── Relevant_Bio_Math_Tracking_Data.mat
-│   ├── Screenshot 2022-01-22 at 12.37.24 AM.png
-│   ├── Tracker_Output.mat
-│   ├── Validating_My_Image_Processing_Algo.asv
-│   ├── Validating_My_Image_Processing_Algo.m
-│   ├── bio_math_model_code.m
-│   ├── bio_math_model_code_part_2_TRACKER_CODE.m
-│   ├── bio_watershed_segmentation.m
-│   ├── cell_image_BW_preprocessor.m
-│   ├── check_Tracking_Output.m
-│   ├── myImg.png
-│   ├── myImg2.tiff
-│   ├── myImg3.tiff
-│   ├── noisy_image_preprocessor.m
-│   ├── noisy_watershed_segmenter.m
-│   ├── preallocate_for_CC.m
-│   ├── save_preProcessed_Images.m
-│   ├── size_dist_2.pdf
-│   └── xyuvtIdx_data.mat
 ├── 01_New_Intensity_Cell_Img_Tracking
 │   ├── Cell_Tracking_n_Intensity_.m
 │   ├── Translated_Images.pdf
@@ -82,29 +9,80 @@
 │   ├── main_particle_tracker_code_.m
 │   ├── mean_Intensity_Data_Matrix.csv
 │   └── mean_intensity_calculator_2.m
-├── 02_Co_Localization_Images_
-│   └── Stage_1_Identify_Particles_.m
-├── 03_Sayoni_Images
-│   └── Green_Images_.m
 ├── 04_REVIEWER_S_Questions
 │   ├── bio_science_plotter_16_04_2024_.m
 │   ├── main_tracking_code_for_cells_16_04_2024_.m
 │   └── new_MAIN_Cell_Image_Code_16_04_2024_.m
 ├── Beads
 │   └── main_beads_file.m
-├── Img_Processing_Talk_
-│   ├── Aditya_01_.m
-│   ├── Aishwarya.m
-│   ├── Img_01.tif
-│   ├── Img_02.tif
-│   ├── MY_tracking_Plot_.m
-│   ├── Sayoni_n_Priyanka_Img_.asv
-│   ├── Sayoni_n_Priyanka_Img_.m
-│   └── movie_2_Px_Data_.mat
 ├── Iso_Surface_Intensity_Plots
 │   └── Iso_Surface_Intensity_Plots_.m
 ├── README.md
 ├── Translate_and_Track_
+│   ├── 001_Input_sample_images_to_test_tracking_algo_
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500_.png
+│   │   ├── A_few_more_challenging_RAW_Images_
+│   │   │   ├── 9237 NPY-Venus (10µl adenovirus)  infected human islets from 6th Feb 491 0.png
+│   │   │   ├── 9238 NPY-Venus (10µl adenovirus)  infected human islets from 6th Feb 491 0.png
+│   │   │   ├── 9243 NPY-Venus (10µl adenovirus)  infected human islets from 6th Feb 491 0.png
+│   │   │   └── 9245 NPY-Venus (10µl adenovirus)  infected human islets from 6th Feb 491 0.png
+│   │   └── Z_Detected_Islands_in_the_image_
+│   │       ├── a_001_0022_(9053)_256x256_1st_frame_.tif
+│   │       ├── a_002_0023_Copy_of_9069_NPY_mChe(30µl)_561_0_.tif
+│   │       ├── a_003_0024_cells_copy_256X256_.tif
+│   │       ├── a_004_0030_cellscopy_256X256_.tif
+│   │       └── a_005_0032_.tif
+│   ├── OutPut_Directory_For_Translated_Images_
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0001_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0002_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0003_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0004_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0005_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0006_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0007_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0008_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0009_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0010_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0011_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0012_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0013_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0014_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0015_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0016_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0017_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0018_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0019_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0020_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0021_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0022_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0023_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0024_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0025_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0026_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0027_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0028_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0029_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0030_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0031_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0032_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0033_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0034_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0035_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0036_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0037_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0038_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0039_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0040_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0041_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0042_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0043_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0044_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0045_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0046_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0047_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0048_.png
+│   │   ├── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0049_.png
+│   │   └── 9069_NPY_mChe_30µl_561_0pt5mW_with_75mM_Kcl_after_10s_exo100_500__dx_1.50_dy_1.50_distance_2.1213_ImgNum_0050_.png
 │   └── translate_img_1.m
 ├── bio_science_plotter_.m
 ├── main_tracking_code_for_cells.m
@@ -122,4 +100,4 @@
 ├── new_MAIN_Cell_Image_Code_13_06_2022_.m
 └── tree.txt
 
-15 directories, 108 files
+11 directories, 90 files
