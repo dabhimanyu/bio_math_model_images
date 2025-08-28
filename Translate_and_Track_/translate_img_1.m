@@ -20,7 +20,7 @@ output_dir = fullfile(['/Users/abhimanyudubey/Pictures/BIO ' ...
     'MATH MODEL/001_Real_Img_via_reg_max_/008_Translate_and_Track_']) ; 
 
 % Get all filenames:
-[filenames , onlyFilenames] = ...
+[input_filenames , onlyFilenames] = ...
     Import_all_files_in_a_folder('.png' , filepath) ; 
 
 %% Extract filepath , filenames , and file extension :
@@ -28,8 +28,8 @@ output_dir = fullfile(['/Users/abhimanyudubey/Pictures/BIO ' ...
 % We'll be making use of the first file here for our purposes and use it
 % it for creating translated images. 
 img_num = 1 ; 
-img = imread(filenames{img_num}) ; 
-[~ , iName , iext] = fileparts(filenames{img_num}) ; clear img_num  ; 
+img = imread(input_filenames{img_num}) ; 
+[~ , iName , iext] = fileparts(input_filenames{img_num}) ; clear img_num  ; 
 
 % Decide The Distance Moved: dx and dy tells it the amount of translation
 % in x and y directions respectively. Both distances are in pixels
