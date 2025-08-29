@@ -13,8 +13,8 @@
 │   ├── bio_science_plotter_16_04_2024_.m
 │   ├── main_tracking_code_for_cells_16_04_2024_.m
 │   └── new_MAIN_Cell_Image_Code_16_04_2024_.m
-├── Beads
-│   └── main_beads_file.m
+├── Artificial_Image_Creation_Code_
+│   └── Artificial_Image_Creation_.m
 ├── Iso_Surface_Intensity_Plots
 │   └── Iso_Surface_Intensity_Plots_.m
 ├── README.md
