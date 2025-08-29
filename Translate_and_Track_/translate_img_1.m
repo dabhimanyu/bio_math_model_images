@@ -90,7 +90,7 @@ end
 if video_file_toggle
     % Construct a VideoWriter object, which creates a 
     % Motion-JPEG AVI file by default.
-    vid_file_name = sprintf('Cell_Video_dx_%3.2f_dy_%3.2f_distance_%4.2f_.avi' , dx, dy , dist_moved) ; 
+    vid_file_name = sprintf('Cell_Video_dx_%3.2f_dy_%3.2f_distance_%4.2f_.avi' , dx, dy , dist_moved) ; %#ok<*UNRCH>
     outputVideo = VideoWriter(fullfile(output_dir , vid_file_name))  ; 
     %     sprintf('Cells_Translation_video_DistTranslated_%4.4f.avi' , dist_moved) ) ) ;
     
