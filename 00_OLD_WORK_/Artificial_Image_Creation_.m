@@ -3,6 +3,9 @@
 clear ; 
 clc ; 
 
+% Do you want to Export The Artificial Image Or Not:
+export_image_toggle = false ; 
+
 % Construct A Noisy Image For Testing:
 
 center1 = -12;
@@ -52,49 +55,60 @@ figure(5) ; clf ;
 imshow(img , []) ; 
 title('\fontsize{20}Image Added With Noise') ; 
 
-%%
-imwrite(img ,'myImg.tiff' , 'tiff' )
+% Do you want to export the Artificially Created IMAGE:
 
-[img2 , BW2] = cell_image_BW_preprocessor(img , 1 , 0.6 , 3) ;  %% Sensitivity = 0.57   
+if export_image_toggle
+    imwrite(img ,'myImg.tiff' , 'tiff' ) ; %#ok<*UNRCH>
+end
 
-% % % % % cell_image_BW_preprocessor(img , 1 , 0.57 , 3)
 
-figure(6) ; clf ; imshow(img2 , []) ;
-title('\fontsize{20}Image AFter Noise Removal')
-imwrite(img2 ,'myImg2.tiff' , 'tiff' )
+%% Processing Artificially Created Image:
 
-figure(7) ; clf ; imshow(BW2 , []) ;
-title('\fontsize{20}BW Image Of Figure(5)') ; 
-%
-%
-CC = bwconncomp(BW2) ; 
-CC.islandSize = cellfun( @length , CC.PixelIdxList )' ; 
+% Uncomment the below code if you also want to process the Artificially 
+% created images using the image processing algorithm that we had
+% developed.
 
-% Percent Std Deviation In the Measurement Of Particle Size:
-% STD is Just 0.7% Of the mean value despite that much noise in the Image:
-percent_std = std(CC.islandSize) / mean(CC.islandSize) * 100 
-min_size    = min(CC.islandSize) ; 
-max_size    = max(CC.islandSize) ; 
-
-clearvars -except img BW2 CC
-
-% Final One Line Processing:
-
-[ img3 , BW3 , CC ] = bio_watershed_segmentation(img , 1800 , 2000  , 1) ; 
-figure(10) ; clf ; imshow(img3) ; 
-title('\fontsize{20} Final Step: Img After Watershed Segmentation')
-imwrite(img3 ,'myImg3.tiff' , 'tiff' )
-
-figure(11) ; clf ; imshow(BW3) ; 
-title('\fontsize{20} Seperating Overlapping Particles') ; 
-
-figure(12) ; clf ; imshow(img3) ; hold on ; 
-plot(CC.centroid(: , 1) , CC.centroid(: ,2) , '+r' , 'LineWidth', 2.5 , 'MarkerSize',15) ; 
-plot(CC.centroid(: , 1) , CC.centroid(: ,2) , 'or' , 'LineWidth', 1.1 , 'MarkerSize',15) ; 
-title('\fontsize{20} Final Step: Img After Watershed Segmentation')
-
-imwrite(img3 ,'myImg3.tiff' , 'tiff' )
-
+% % NOTE: UnComment me if you want to process the images created above:
+% [img2 , BW2] = cell_image_BW_preprocessor(img , 1 , 0.6 , 3) ;  %% Sensitivity = 0.57   
+% 
+% % % % % % cell_image_BW_preprocessor(img , 1 , 0.57 , 3)
+% 
+% figure(6) ; clf ; imshow(img2 , []) ;
+% title('\fontsize{20}Image AFter Noise Removal')
+% imwrite(img2 ,'myImg2.tiff' , 'tiff' )
+% 
+% figure(7) ; clf ; imshow(BW2 , []) ;
+% title('\fontsize{20}BW Image Of Figure(5)') ; 
+% %
+% %
+% CC = bwconncomp(BW2) ; 
+% CC.islandSize = cellfun( @length , CC.PixelIdxList )' ; 
+% 
+% % Percent Std Deviation In the Measurement Of Particle Size:
+% % STD is Just 0.7% Of the mean value despite that much noise in the Image:
+% percent_std = std(CC.islandSize) / mean(CC.islandSize) * 100 
+% min_size    = min(CC.islandSize) ; 
+% max_size    = max(CC.islandSize) ; 
+% 
+% clearvars -except img BW2 CC
+% 
+% % Final One Line Processing:
+% 
+% [ img3 , BW3 , CC ] = bio_watershed_segmentation(img , 1800 , 2000  , 1) ; 
+% figure(10) ; clf ; imshow(img3) ; 
+% title('\fontsize{20} Final Step: Img After Watershed Segmentation')
+% imwrite(img3 ,'myImg3.tiff' , 'tiff' )
+% 
+% figure(11) ; clf ; imshow(BW3) ; 
+% title('\fontsize{20} Seperating Overlapping Particles') ; 
+% 
+% figure(12) ; clf ; imshow(img3) ; hold on ; 
+% plot(CC.centroid(: , 1) , CC.centroid(: ,2) , '+r' , 'LineWidth', 2.5 , 'MarkerSize',15) ; 
+% plot(CC.centroid(: , 1) , CC.centroid(: ,2) , 'or' , 'LineWidth', 1.1 , 'MarkerSize',15) ; 
+% title('\fontsize{20} Final Step: Img After Watershed Segmentation')
+% 
+% imwrite(img3 ,'myImg3.tiff' , 'tiff' )
+% 
 
 %%
 
