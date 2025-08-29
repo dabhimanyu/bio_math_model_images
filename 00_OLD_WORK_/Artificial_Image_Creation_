@@ -52,7 +52,7 @@ figure(5) ; clf ;
 imshow(img , []) ; 
 title('\fontsize{20}Image Added With Noise') ; 
 
-%
+%%
 imwrite(img ,'myImg.tiff' , 'tiff' )
 
 [img2 , BW2] = cell_image_BW_preprocessor(img , 1 , 0.6 , 3) ;  %% Sensitivity = 0.57   
