@@ -197,7 +197,7 @@ mean_intensity_data             =       cell( numel(fileNames) , 1)  ;
 % helps to parallelize the code subsequently.  
 centroid_data                   =       cellfun(@(x) zeros(temp , 2) , ...
                                         centroid_data , 'UniformOutput', 0 ) ; 
-
+% Ditto for the mean_intensity_data
 mean_intensity_data             =       cellfun(@(x) zeros(temp , 1) , ...
                                         mean_intensity_data , 'UniformOutput', 0 ) ; 
 %
