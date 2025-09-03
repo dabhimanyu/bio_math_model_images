@@ -1,0 +1,20 @@
+{
+"io": {
+"mode": "synthetic",
+"input_root": "/Users/abhimanyudubey/MATLAB-Drive/CRAP/bio_math_model_images/TIRFM_v2_protocol/demos/synthetic_demo",
+"file_glob": "*.tiff",
+"output_root": "/Users/abhimanyudubey/MATLAB-Drive/CRAP/bio_math_model_images/TIRFM_v2_protocol/outputs",
+"case_id": "synthetic_demo_01"
+},
+"preprocess": {"apply": true, "wiener": {"apply": true, "nhood": 3}, "median": {"apply": false, "size": 3}, "sharpen": {"apply": false, "amount": 0.6, "radius": 1}},
+"mask": {
+"method": "block_otsu",
+"block": {"size": 64, "overlap": 8},
+"bradley": {"window": 41, "t": 0.15},
+"morph": {"close": 2, "dilate": 1, "open": 1}
+},
+"detect": {"min_area": 3, "max_area": 200, "min_intensity": 0, "subpixel": {"method": "gaussian", "patch": 5}},
+"track": {"apply": false, "max_link_distance": 5, "gap_closing": 0},
+"write": {"csv": true, "mat": {"centroids": true, "tracking": false}, "overlays": true},
+"run": {"seed": 1234}
+}
