@@ -1,0 +1,1 @@
+expected particle count 180 (± tolerance = 3)
