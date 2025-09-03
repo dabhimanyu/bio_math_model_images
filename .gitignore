@@ -1,4 +1,13 @@
+/outputs/
+/data/**/large/
+*.mat
+!*.mat
 *.asv
 *.m~
 .DS_Store
->
+.vs*
+.idea/
+.vscode/
+codegen/
+*.autosave
+*.log
