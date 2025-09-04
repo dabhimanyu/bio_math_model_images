@@ -1,20 +1,52 @@
 {
-"io": {
-"mode": "tirf",
-"input_root": "/Users/abhimanyudubey/MATLAB-Drive/CRAP/bio_math_model_images/TIRFM_v2_protocol/demos/tirf_demo",
-"file_glob": "*.png",
-"output_root": "/Users/abhimanyudubey/MATLAB-Drive/CRAP/bio_math_model_images/TIRFM_v2_protocol/outputs",
-"case_id": "tirf_demo_01"
-},
-"preprocess": {"apply": true, "wiener": {"apply": true, "nhood": 3}, "median": {"apply": false, "size": 3}, "sharpen": {"apply": false, "amount": 0.6, "radius": 1}},
-"mask": {
-"method": "bradley_adaptive",
-"block": {"size": 64, "overlap": 8},
-"bradley": {"window": 41, "t": 0.15},
-"morph": {"close": 2, "dilate": 1, "open": 1}
-},
-"detect": {"min_area": 3, "max_area": 200, "min_intensity": 0, "subpixel": {"method": "gaussian", "patch": 5}},
-"track": {"apply": true, "max_link_distance": 5, "gap_closing": 1},
-"write": {"csv": true, "mat": {"centroids": true, "tracking": false}, "overlays": true},
-"run": {"seed": 1234}
+  "io": {
+    "mode": "tirf",
+    "input_path": "/Users/abhimanyudubey/MATLAB-Drive/CRAP/bio_math_model_images/TIRFM_v2_protocol/demos/tirf_demo",
+    "file_glob": "*.png",
+    "output_root": "/Users/abhimanyudubey/MATLAB-Drive/CRAP/bio_math_model_images/TIRFM_v2_protocol/outputs",
+    "run_id": "tirf_demo_01",
+    "random_seed": 0
+  },
+
+  "pilot": { "enabled": true, "num_frames": 2, "exit_after": false },
+
+  "preprocess": {
+    "enabled": true,
+    "wiener":  { "enabled": true, "window": 5 },
+    "median":  { "enabled": true, "window": 2 },
+    "sharpen": { "enabled": false, "radius": 1.05, "amount": 1.6, "threshold": 0.7 }
+  },
+
+  "masking": {
+    "enabled": true,
+    "mode": "global_otsu",
+    "global_otsu": { "enabled": true },
+    "block_otsu":  { "enabled": false, "block_size": 64, "border_size": 8, "use_parallel": true },
+    "bradley_adaptive": { "enabled": false, "window_size": 63, "sensitivity": 0.30 },
+    "morphology": { "se_type": "disk", "close_radius": 100, "dilate_radius": 5, "open_radius": 4 }
+  },
+
+  "regional_max": { "enabled": true, "connectivity": 4 },
+  "components":   { "enabled": true, "connectivity": 4 },
+
+  "subpixel": { "enabled": true, "method": "2d_gaussian" },
+
+  "tracking": {
+    "enabled": true,
+    "max_disp": 4.9,
+    "skip_frames": 1,
+    "remove_nearby_particles": { "enabled": false, "percent_of_max_pixel_displacement": 105 },
+    "carry_intensity": true,
+    "export_csv": true,
+    "export_mat": false
+  },
+
+  "intensity": { "enabled": true, "estimator": "mean_5px_cross", "normalize_per_track": true },
+
+  "outputs": {
+    "export_centroids_mat": true,
+    "export_detection_csv": true,
+    "export_figures": true,
+    "save_intermediates": false
+  }
 }
