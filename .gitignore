@@ -1,13 +1,22 @@
+# User-generated outputs
 /outputs/
+# Large/raw data (keep only tiny demos in repo)
+#/data/**/large/ # uncomment if you add a 'large' subtree for local data
 /data/**/large/
+# Binary/state files
 *.mat
-!*.mat
+!data/**/demo/**/*.mat
+!examples/**/demo/**/*.mat
 *.asv
 *.m~
+*.autosave
+*.log
+# IDE/system clutter
 .DS_Store
 .vs*
 .idea/
 .vscode/
+# MATLAB codegen cache
 codegen/
-*.autosave
-*.log
+# Scratch space (safe local sandboxes)
+sandbox/
