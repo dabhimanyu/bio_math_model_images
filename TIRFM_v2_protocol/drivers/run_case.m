@@ -52,7 +52,7 @@ function [runDir, cfg] = run_case(configPath)
 
     % 4) Write RUN_INFO.json (provenance)
     runInfo = struct();
-    runInfo.generated_at = datestr(now, 'yyyy-mm-ddTHH:MM:SS');
+    runInfo.generated_at = [ '__' , char(datetime('now' , 'Format', 'yyyy_MMM_dd_HH_mm_ss')) , '__' ] ;
     runInfo.host = getHostName_();
     runInfo.matlab.version = version;
     runInfo.matlab.release = version('-release');

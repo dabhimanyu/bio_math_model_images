@@ -21,7 +21,10 @@ function [runDir, runId] = build_run_dir(cfg)
         
     % Generate timestamp and run ID
     ts = char(datetime('now', 'Format', 'yyyy_MMM_dd_HH_mm_ss'));
-    safeCase = sanitize_(cfg.io.case_id);
+    
+    % SANITIZE_() Replace non-alphanumeric characters (except _ and -) with underscores
+    % by making use of regular expressions
+    safeCase = sanitize_(cfg.io.case_id); % 
     runId = sprintf('%s__%s__%s', lower(cfg.io.mode), safeCase, ts);
 
     % Create run directory
