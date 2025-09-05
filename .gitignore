@@ -1,22 +1,35 @@
-# User-generated outputs
-/outputs/
-# Large/raw data (keep only tiny demos in repo)
-#/data/**/large/ # uncomment if you add a 'large' subtree for local data
-/data/**/large/
-# Binary/state files
-*.mat
-!data/**/demo/**/*.mat
-!examples/**/demo/**/*.mat
+# MATLAB-specific ignores
 *.asv
 *.m~
-*.autosave
-*.log
-# IDE/system clutter
-.DS_Store
-.vs*
-.idea/
-.vscode/
-# MATLAB codegen cache
+*.mlx
+*.slx
+*.slreqx
+*.sldd
+*.mat  # Ignore MAT files except tiny demo ones if explicitly tracked
+*.fig
+*.mlapp
+*.mlappinstall
+*.mltbx
+*.mlpkginstall
+*.mlproj
 codegen/
-# Scratch space (safe local sandboxes)
-sandbox/
+slprj/
+
+# OS-specific
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.vs*
+
+# Outputs and large data
+/outputs/
+/data/**/large/
+/data/**/raw/
+/sandbox/
+
+# Logs and autosaves
+*.log
+*.autosave
+*.bak
+*.tmp
