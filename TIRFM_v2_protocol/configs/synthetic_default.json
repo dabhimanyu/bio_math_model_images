@@ -4,33 +4,61 @@
     "input_path": "/Users/abhimanyudubey/MATLAB-Drive/CRAP/bio_math_model_images/TIRFM_v2_protocol/demos/synthetic_demo",
     "file_glob": "*.tif",
     "output_root": "/Users/abhimanyudubey/MATLAB-Drive/CRAP/bio_math_model_images/TIRFM_v2_protocol/outputs",
-    "run_id": "synthetic_demo_01",
+    "run_id": "Run_001",
     "random_seed": 0
   },
-
-  "pilot": { "enabled": true, "num_frames": 2, "exit_after": false },
-
-  "preprocess": {
+  "pilot": {
     "enabled": true,
-    "wiener":  { "enabled": true, "window": 5 },
-    "median":  { "enabled": true, "window": 2 },
-    "sharpen": { "enabled": false, "radius": 1.05, "amount": 1.6, "threshold": 0.7 }
+    "num_frames": 2,
+    "exit_after": false
   },
-
+  "pre_mask_preprocess": {
+    "enabled": false,
+    "wiener":  { "enabled": false, "window": 5 },
+    "median":  { "enabled": false, "window": 5, "padding": "symmetric" },
+    "sharpen": { "enabled": false, "radius": 1.05, "amount": 0.0, "threshold": 0.7 }
+  },
   "masking": {
     "enabled": true,
-    "mode": "block_otsu",
+    "mode": "manual",
     "global_otsu": { "enabled": false },
-    "block_otsu":  { "enabled": true, "block_size": 64, "border_size": 8, "use_parallel": true },
-    "bradley_adaptive": { "enabled": false, "window_size": 63, "sensitivity": 0.30 },
-    "morphology": { "se_type": "disk", "close_radius": 16, "dilate_radius": 3, "open_radius": 2 }
+    "manual": {
+      "enabled": true,
+      "threshold": 130
+    },
+    "block_otsu": {
+      "enabled": false,
+      "block_size": 64,
+      "border_size": 8,
+      "use_parallel": true
+    },
+    "bradley_adaptive": {
+      "enabled": false,
+      "window_size": 63,
+      "sensitivity": 0.30
+    },
+    "morphology": {
+      "enabled": false,
+      "se_type": "disk",
+      "close_radius": 100,
+      "dilate_radius": 14,
+      "open_radius": 3
+    }
   },
-
-  "regional_max": { "enabled": true, "connectivity": 4 },
+  "post_mask_preprocess": {
+    "enabled": false,
+    "wiener":  { "enabled": false, "window": 5 },
+    "median":  { "enabled": false, "window": 5, "padding": "symmetric" },
+    "sharpen": { "enabled": false, "radius": 1.05, "amount": 0.0, "threshold": 0.7 }
+  },
+  "hmax_suppression": {
+    "enabled": false,
+    "h_value": 1200,
+    "connectivity": 8
+  },
+  "regional_max": { "enabled": false, "connectivity": 4, "rescale_before": false },
   "components":   { "enabled": true, "connectivity": 4 },
-
-  "subpixel": { "enabled": false, "method": "2d_gaussian" },
-
+  "subpixel": { "enabled": true, "method": "2d_gaussian" },
   "tracking": {
     "enabled": false,
     "max_disp": 4.9,
@@ -40,9 +68,7 @@
     "export_csv": true,
     "export_mat": false
   },
-
-  "intensity": { "enabled": true, "estimator": "mean_5px_cross", "normalize_per_track": false },
-
+  "intensity": { "enabled": true, "estimator": "mean_5px_cross", "normalize_per_track": true },
   "outputs": {
     "export_centroids_mat": true,
     "export_detection_csv": true,
