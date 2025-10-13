@@ -1,0 +1,84 @@
+cff-version: 1.2.0
+message: >
+  If you use this code, please cite both the software release and the
+  associated Heliyon publication. The Zenodo DOI ensures reproducibility
+  and long-term archival of the exact version used in the study.
+title: "bio_math_model_images: MATLAB pipeline for vesicle detection and exocytosis analysis"
+type: software
+version: v1.0-doi
+doi: 10.5281/zenodo.17342495
+repository-code: "https://github.com/dabhimanyu/bio_math_model_images"
+url: "https://github.com/dabhimanyu/bio_math_model_images/releases/tag/v1.0-doi"
+abstract: >
+  This release (v1.0-doi) is an immutable, Zenodo-archived snapshot of the
+  MATLAB codebase used in the Heliyon paper by Makam et al. (2024). It
+  provides a reproducible pipeline for semi-automatic detection of insulin
+  granule exocytosis in human pancreatic β-cells using TIRF microscopy.
+  The pipeline includes pre-processing, vesicle localisation, trajectory
+  tracking, and classification of docking and exocytosis events.
+authors:
+  - family-names: "Dubey"
+    given-names: "Abhimanyu"
+    affiliation: "Indian Institute of Science (IISc) Bengaluru & IIT Bombay, India"
+    orcid: "https://orcid.org/0000-0002-2223-9958"
+  - family-names: "Makam"
+    given-names: "Aishwarya A."
+    affiliation: "Indian Institute of Science (IISc) Bengaluru"
+  - family-names: "Maharana"
+    given-names: "Shovamayee"
+    affiliation: "Indian Institute of Science (IISc) Bengaluru, India"
+  - family-names: "Gandasi"
+    given-names: "Nikhil R."
+    affiliation: "Indian Institute of Science (IISc) Bengaluru, India"
+license: "MIT"
+keywords:
+  - TIRF microscopy
+  - vesicle detection
+  - exocytosis analysis
+  - MATLAB
+  - image processing
+  - β-cells
+  - fluorescence microscopy
+  - granule tracking
+  - insulin secretion
+preferred-citation:
+  type: software
+  title: "bio_math_model_images: MATLAB pipeline for vesicle detection and exocytosis analysis"
+  version: v1.0-doi
+  doi: 10.5281/zenodo.17342495
+  url: "https://doi.org/10.5281/zenodo.17342495"
+  authors:
+    - family-names: "Dubey"
+      given-names: "Abhimanyu"
+    - family-names: "Makam"
+      given-names: "Aishwarya A."
+    - family-names: "Maharana"
+      given-names: "Shovamayee"
+    - family-names: "Gandasi"
+      given-names: "Nikhil R."
+  date-released: 2025-10-13
+  repository-code: "https://github.com/dabhimanyu/bio_math_model_images"
+  notes: >
+    Version of record for the Heliyon 2024 paper; byte-for-byte identical
+    to v1.0 (commit d8a945d5a2c2890aeca1e32531badf379d3f2328). Archived via
+    Zenodo for citation and reproducibility.
+
+references:
+  - type: article
+    title: "Algorithm for semi-automatic detection of insulin granule exocytosis in human pancreatic β-cells"
+    authors:
+      - family-names: "Makam"
+        given-names: "Aishwarya A."
+      - family-names: "Dubey"
+        given-names: "Abhimanyu"
+      - family-names: "Maharana"
+        given-names: "Shovamayee"
+      - family-names: "Gandasi"
+        given-names: "Nikhil R."
+    journal: "Heliyon"
+    volume: "10"
+    year: 2024
+    pages: "e38307"
+    doi: "10.1016/j.heliyon.2024.e38307"
+    url: "https://doi.org/10.1016/j.heliyon.2024.e38307"
+concept-doi: 10.5281/zenodo.17342494
